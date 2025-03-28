@@ -22,6 +22,10 @@ func Setup(app *fiber.App) {
 	admin.Delete("/list/:id", controllers.DeletePacket)
 	// admin.Post("/logout", controllers.Logout)
 
+	student := app.Group("/students")
+	student.Get("/list", controllers.IndexStudent)
+	student.Get("/view/:username", controllers.ShowStudent)
+	student.Delete("/list/:username", controllers.DeleteStudent)
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)
 	// admin.Get("/cashier/index", controllers.IndexCashier)

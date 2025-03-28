@@ -7,14 +7,16 @@ const breadcrumbMap: { [key: string]: string } = {
   home: "Home",
   courses: "Courses",
   tambahPaket: "Tambah Paket",
-  view: "Detail Paket",
-  edit: "Update Paket",
+  viewPaket: "Detail Paket",
+  editPaket: "Update Paket",
+  viewSiswa: "Detail Siswa",
 };
 
 const Breadcrumbs: React.FC = () => {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter((x) => x);
   const [packageName, setPackageName] = useState<string | null>(null);
+  const [studentName, setStudentName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPackageName = async (id: string) => {
@@ -29,10 +31,28 @@ const Breadcrumbs: React.FC = () => {
       }
     };
 
-    if (pathnames.length > 2 && pathnames[1] === "courses" && pathnames[2] === "view") {
+    const fetchStudentName = async (username: string) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/students/view/${username}`);
+        if (response.ok) {
+          const data = await response.json();
+          setStudentName(data.first_name);
+        }
+      } catch (error) {
+        console.error("Failed to fetch student name", error);
+      }
+    };
+
+    if (pathnames.length > 2 && pathnames[1] === "students" && pathnames[2] === "viewSiswa") {
+      fetchStudentName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "students" && pathnames[2] === "editSiswa") {
+      fetchStudentName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "courses" && pathnames[2] === "viewPaket") {
       fetchPackageName(pathnames[3]);
     }
-    if (pathnames.length > 2 && pathnames[1] === "courses" && pathnames[2] === "edit") {
+    if (pathnames.length > 2 && pathnames[1] === "courses" && pathnames[2] === "editPaket") {
       fetchPackageName(pathnames[3]);
     }
   }, [pathnames]);
@@ -47,12 +67,20 @@ const Breadcrumbs: React.FC = () => {
           const routeTo = `/${pathnames.slice(0, index + 2).join('/')}`;
           let displayName = breadcrumbMap[name] || name;
 
-          if (name.match(/\d+/) && packageName && pathnames[index] === "edit" ) {
+          if (name.match(/\d+/) && packageName && pathnames[index] === "editPaket" ) {
             displayName = packageName;
           }
 
-          if (name.match(/\d+/) && packageName && pathnames[index] === "view" ) {
+          if (name.match(/\d+/) && packageName && pathnames[index] === "viewPaket" ) {
             displayName = packageName;
+          }
+
+          if (name.match(/\d+/) && studentName && pathnames[index] === "editSiswa" ) {
+            displayName = studentName;
+          }
+
+          if (name.match(/\d+/) && studentName && pathnames[index] === "viewSiswa" ) {
+            displayName = studentName;
           }
 
           return (

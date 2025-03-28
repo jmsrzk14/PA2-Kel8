@@ -1,21 +1,18 @@
 package models
 
 import (
-	"github.com/go-playground/validator/v10"
+	"time"
 )
 
 type T_Prodi struct {
-	Id_prodi        uint      	`json:"id_prodi"`
-	Nama_prodi 		string    	`json:"nama_prodi" gorm:"not null"`
-	Id_ptn     		int       	`json:"id_ptn" gorm:"not null"`
-	T_Ptn    		T_Ptn  		`gorm:"foreignKey:Id_ptn" json:"t_ptn"`
-	Nama_prodi_ptn	string     	`json:"nama_prodi_ptn" gorm:"not null"`
-	Jenis      		string      `json:"jenis" gorm:"not null"`
-	Active			int			`json:"active" gorm:"not null"`
-	Jenjang 		string 		`json:"jenjang" gorm:"not null"`
-}
-
-func (t_prodi *T_Prodi) ValidateTProdi() error {
-	validate := validator.New()
-	return validate.Struct(t_prodi)
+	Id_prodi       string    `json:"id_prodi" gorm:"primaryKey;type:char(100)"`
+	Nama_prodi     string    `json:"nama_prodi" gorm:"not null"`
+	PTNID          uint      `json:"ptn_id" gorm:"not null"`
+	T_Ptn          T_Ptn     `gorm:"foreignKey:PTNID" json:"t_ptn"`
+	Nama_prodi_ptn string    `json:"nama_prodi_ptn" gorm:"not null"`
+	Jenis          string    `json:"jenis" gorm:"not null"`
+	Active         int       `json:"active" gorm:"not null"`
+	Jenjang        string    `json:"jenjang" gorm:"not null"`
+	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt      time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }

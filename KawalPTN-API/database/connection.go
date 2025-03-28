@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	conn, err := gorm.Open(mysql.Open("root:@tcp(localhost:3306)/pa2kel08"), &gorm.Config{})
+	conn, err := gorm.Open(mysql.Open("root:@tcp(localhost:3306)/pa02kel08"), &gorm.Config{})
 	if err != nil {
 		panic("could not connect to database")
 	}
@@ -18,5 +18,6 @@ func Connect() {
 	DB = conn
 
 	conn.AutoMigrate(
-		&models.T_Paket{}, &models.T_Siswa{}, &models.Kelulusan{})
+		&models.T_Siswa{})
+
 }

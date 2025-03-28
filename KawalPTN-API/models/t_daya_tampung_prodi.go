@@ -5,8 +5,8 @@ import (
 )
 
 type T_Daya_Tampung_Prodi struct {
-	Id_prodi       uint    `json:"id_prodi"`
-	T_Prodi        T_Prodi `gorm:"foreignKey:Id_prodi" json:"t_prodi"`
+	ProdiID        string  `json:"prodi_id" gorm:"type:char(100)"`
+	T_Prodi        T_Prodi `gorm:"foreignKey:ProdiID" json:"t_prodi"`
 	Tahun          int     `json:"tahun" gorm:"not null"`
 	Peringkat      int     `json:"peringkat" gorm:"default: null"`
 	Daya_tampung   int     `json:"daya_tampung" gorm:"not null"`

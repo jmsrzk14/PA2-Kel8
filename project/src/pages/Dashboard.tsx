@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import StudentsContent from "./students";
 import CoursesContent from "./courses";
 import CreateCourses from "./CreateCourses";
 import UpdateCourses from "./EditCourses";
 import ViewCourses from "./ViewCourses";
+import ViewStudents from "./ViewStudents";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -96,9 +98,10 @@ const Dashboard: React.FC = () => {
           <Route path="/home" element={<DashboardContent />} />
           <Route path="/courses/list" element={<CoursesContent />} />
           <Route path="/courses/tambahPaket" element={<CreateCourses />} />
-          <Route path="/courses/edit/:id" element={<UpdateCourses />} />
-          <Route path="/courses/view/:id" element={<ViewCourses />} />
-          <Route path="/messages" element={<div className="p-6">Messages Content</div>} />
+          <Route path="/courses/editPaket/:id" element={<UpdateCourses />} />
+          <Route path="/courses/viewPaket/:id" element={<ViewCourses />} />
+          <Route path="/students/list" element={<StudentsContent />} />
+          <Route path="/students/viewSiswa/:username" element={<ViewStudents />} />
           <Route path="/settings" element={<div className="p-6">Settings Content</div>} />
         </Routes>
       </div>
