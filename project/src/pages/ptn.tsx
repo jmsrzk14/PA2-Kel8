@@ -3,36 +3,35 @@ import { Link } from 'react-router-dom';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button } from "@mui/material";
 import { Eye, Pencil, Trash } from 'lucide-react';
 
-type Students = {
-  username: string;
-  nisn: string;
-  first_name: string;
-  kelompok_ujian: string;
+type MajorPackage = {
+  id_ptn: number;
+  nama_ptn: string;
+  nama_singkat: string;
 };
 
 interface Column {
-  id: keyof Students; 
+  id: keyof MajorPackage; 
   label: string;
 }
 
 const columns: readonly Column[] = [
-  { id: "first_name", label: "Nama" },
-  { id: "kelompok_ujian", label: "Kelompok Ujian"},
+  { id: "nama_ptn", label: "Nama PTN" },
+  { id: "nama_singkat", label: "Nama Singkat"},
 ];
 
-const StudentsContent = () => {
-  const [packages, setPackages] = useState<Students[]>([]);
+const PtnContent = () => {
+  const [packages, setPackages] = useState<MajorPackage[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/students/list");
+        const response = await fetch("http://127.0.0.1:8000/university/list");
         if (!response.ok) {
           throw new Error("Data tidak ditemukan!");
         }
-        const data: Students[] = await response.json();
+        const data: MajorPackage[] = await response.json();
         console.log("API Response:", data);
         setPackages(data);
       } catch (err) {
@@ -45,16 +44,16 @@ const StudentsContent = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (username: string) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus siswa ini?")) {
+  const handleDelete = async (id: number) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus paket ini?")) {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/students/list/${username}`, {
+        const response = await fetch(`http://127.0.0.1:8000/university/list/${id}`, {
           method: "DELETE",
         });
         if (!response.ok) {
-          throw new Error("Gagal menghapus siswa");
+          throw new Error("Gagal menghapus paket");
         }
-        window.location.reload();
+        setPackages((prev) => prev.filter((item) => item.id_ptn !== id));
       } catch (error) {
         alert(error);
       }
@@ -68,7 +67,12 @@ const StudentsContent = () => {
   if (error) {
     return <div className="p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Siswa</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Perguruan Tinggi Negeri</h1>
+        <Link to="/dashboard/university/tambahPaket" className="font-medium text-sm">
+          <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
+            Tambah PTN
+          </button>
+        </Link>
       </div>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
@@ -92,10 +96,10 @@ const StudentsContent = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Siswa</h1>
-        <Link to="/dashboard/courses/tambahPaket" className="font-medium text-sm">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Perguruan Tinggi Negeri</h1>
+        <Link to="/dashboard/university/tambahPtn" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
-            Tambah Paket TryOut
+            Tambah PTN
           </button>
         </Link>
       </div>
@@ -112,21 +116,21 @@ const StudentsContent = () => {
           </TableHead>
           <TableBody>
             {packages.map((row, index) => (
-              <TableRow hover tabIndex={-1} key={row.username} align="center">
+              <TableRow hover tabIndex={-1} key={row.id_ptn} align="center">
                 <TableCell>{index + 1}</TableCell>
                 {columns.map((column) => (
                   <TableCell key={column.id} align="center">
-                      {row[column.id]}
+                    {row[column.id]}
                   </TableCell>                
                 ))}
                 <TableCell align="center">
-                  <Link to={`/dashboard/students/viewSiswa/${row.username}`}>
+                  <Link to={`/dashboard/university/viewPtn/${row.id_ptn}`}>
                     <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>
                   </Link>
-                  <Link to={`/dashboard/students/editSiswa/${row.username}`}>
+                  <Link to={`/dashboard/university/editPtn/${row.id_ptn}`}>
                     <Button variant="contained" color="warning" size="small" sx={{ mr: 3, minWidth: 30 }}><Pencil size={20} /></Button>
                   </Link>
-                  <Button variant="contained" color="error" size="small" sx={{ mr: 1, minWidth: 30 }} onClick={() => handleDelete(row.username)}>
+                  <Button variant="contained" color="error" size="small" sx={{ mr: 1, minWidth: 30 }} onClick={() => handleDelete(row.id_ptn)}>
                     <Trash size={20} />
                   </Button>
                 </TableCell>
@@ -139,4 +143,4 @@ const StudentsContent = () => {
   );
 };
 
-export default StudentsContent;
+export default PtnContent;

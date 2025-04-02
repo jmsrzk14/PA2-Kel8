@@ -1,48 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const EditPaket = () => {
-  const { id } = useParams(); 
+const TambahPtn = () => {
   const [namaPaket, setNamaPaket] = useState('');
-  const [total, setTotal] = useState('');
-  const [active, setActive] = useState('');
-  const [price, setPrice] = useState('');
+  const [total, setTotal] = useState(0);
+  const [active, setActive] = useState(0);
+  const [price, setPrice] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchPaket = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/courses/view/${id}`);
-        if (!response.ok) throw new Error('Gagal mengambil data paket');
-        const data = await response.json();
-        console.log("Data dari API:", data);
-        
-        setNamaPaket(data.nama_paket);
-        setTotal(data.total.toString());
-        setActive(data.active.toString());
-        setPrice(data.price.toString());
-      } catch (error) {
-        console.error("Error fetching paket:", error);
-      }
-    };
-
-    fetchPaket();
-  }, [id]);
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const formData = new URLSearchParams();
     formData.append("name", namaPaket);
-    formData.append("total", total);
-    formData.append("active", active);
-    formData.append("price", price);
+    formData.append("total", total.toString());
+    formData.append("active", active.toString());
+    formData.append("price", price.toString());
 
-    console.log("Payload yang dikirim:", formData.toString());
+    console.log("Payload yang dikirim:", formData.toString()); // 🔍 Debugging
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/courses/edit/${id}`, {
-        method: "PUT",
+      const response = await fetch("http://127.0.0.1:8000/courses/createPacket", {
+        method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -55,16 +34,16 @@ const EditPaket = () => {
       if (response.ok) {
         navigate("/dashboard/courses/list");
       } else {
-        alert("Gagal mengupdate paket");
+        alert("Gagal menambahkan paket");
       }
     } catch (error) {
-      console.error("Error saat mengupdate paket", error);
+      console.error("Error saat menambahkan paket", error);
     }
   };
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Update Paket TryOut</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Tambah Paket TryOut</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">Nama Paket</label>
@@ -79,26 +58,20 @@ const EditPaket = () => {
         <div>
           <label className="block text-sm font-medium text-gray-700">Total</label>
           <input
-            type="text"
+            type="number"
             className="mt-1 p-2 border rounded w-full"
             value={total}
-            onChange={(e) => {
-              const rawValue = e.target.value.replace(/\D/g, "");
-              setTotal(rawValue);
-            }}
+            onChange={(e) => setTotal(Number(e.target.value))}
             required
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Active</label>
           <input
-            type="text"
+            type="number"
             className="mt-1 p-2 border rounded w-full"
             value={active}
-            onChange={(e) => {
-              const rawValue = e.target.value.replace(/\D/g, "");
-              setActive(rawValue);
-            }}
+            onChange={(e) => setActive(Number(e.target.value))}
             required
           />
         </div>
@@ -107,12 +80,12 @@ const EditPaket = () => {
           <div className="mt-1 flex items-center border rounded w-full">
             <span className="p-2">Rp.</span>
             <input
-              type="text"
+              type="number"
               className="p-2 flex-1 outline-none"
-              value={price.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              value={price.toLocaleString("id-ID")}
               onChange={(e) => {
                 const rawValue = e.target.value.replace(/\D/g, "");
-                setPrice(rawValue);
+                setPrice(Number(rawValue));
               }}
               required
             />
@@ -122,11 +95,11 @@ const EditPaket = () => {
           type="submit"
           className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-md"
         >
-          Simpan
+          Simpan Paket
         </button>
       </form>
     </div>
   );
 };
 
-export default EditPaket;
+export default TambahPtn;

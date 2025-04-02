@@ -9,6 +9,7 @@ const LihatSiswa = () => {
   const [active, setActive] = useState(0);
   const [kelompokUjian, setKelompokUjian] = useState('');
   const [noUtbk, setNoUtbk] = useState(0);
+  const [grade, setGrade] = useState('');
   const [namaSekolah, setNamaSekolah] = useState('');
   const [pilihan1Utbk, setPilihan1Utbk] = useState('');
   const [pilihan2Utbk, setPilihan2Utbk] = useState('');
@@ -32,12 +33,13 @@ const LihatSiswa = () => {
         setNisn(data.nisn);
         setActive(data.active);
         setKelompokUjian(data.kelompok_ujian);
-        setNoUtbk(data.noUtbk);
+        setNoUtbk(data.no_utbk);
+        setGrade(data.grade);
         setNamaSekolah(data.nama_sekolah);
-        setPilihan1Utbk(data.pilihan1_utbk);
-        setPilihan2Utbk(data.pilihan2_utbk);
-        setPilihan1UtbkAktual(data.pilihan1_utbk_aktual);
-        setPilihan2UtbkAktual(data.pilihan2_utbk_aktual);
+        setPilihan1Utbk(data.nama_prodi1);
+        setPilihan2Utbk(data.nama_prodi2);
+        setPilihan1UtbkAktual(data.nama_prodi1_aktual);
+        setPilihan2UtbkAktual(data.nama_prodi2_aktual);
       } catch (err_or) {
         console.error("Error fetching paket:", error);
         setError('Gagal memuat data. Silakan coba lagi.');
@@ -63,13 +65,13 @@ const LihatSiswa = () => {
         <p><strong>NISN:</strong> {nisn || "-"}</p>
         <p><strong>Aktif:</strong> {active || "-"}</p>
         <p><strong>No UTBK:</strong> {noUtbk || "-"}</p>
+        <p><strong>Grade:</strong> {grade || "-"}</p>
         <p><strong>Asal Sekolah:</strong> {namaSekolah || "-"}</p>
         <p><strong>Kelompok Ujian:</strong> {kelompokUjian}</p>
         <p><strong>Pilihan 1 UTBK:</strong> {pilihan1Utbk || "-"}</p>
         <p><strong>Pilihan 2 UTBK:</strong> {pilihan2Utbk || "-"}</p>
         <p><strong>Pilihan 1 UTBK Aktual:</strong> {pilihan1UtbkAktual || "-"}</p>
         <p><strong>Pilihan 2 UTBK Aktual:</strong> {pilihan2UtbkAktual || "-"}</p>
-        {/* <p><strong>Harga:</strong> Rp {price.toLocaleString('id-ID')}</p> */}
       </div>
     </div>
   );

@@ -26,6 +26,21 @@ func Setup(app *fiber.App) {
 	student.Get("/list", controllers.IndexStudent)
 	student.Get("/view/:username", controllers.ShowStudent)
 	student.Delete("/list/:username", controllers.DeleteStudent)
+	student.Put("/edit/:username", controllers.UpdateStudent)
+
+	university := app.Group("/university")
+	university.Post("/createUniversity", controllers.CreateUniversity)
+	university.Get("/list", controllers.IndexUniversity)
+	university.Get("/view/:id_ptn", controllers.ShowUniversity)
+	university.Put("/edit/:id_ptn", controllers.UpdateUniversity)
+	university.Delete("/list/:id_ptn", controllers.DeleteUniversity)
+
+	major := app.Group("/major")
+	major.Post("/createMajor", controllers.CreateMajor)
+	major.Get("/list", controllers.IndexMajor)
+	major.Get("/view/:id_prodi", controllers.ShowMajor)
+	major.Put("/edit/:id_prodi", controllers.UpdateMajor)
+	major.Delete("/list/:id_prodi", controllers.DeleteMajor)
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)
 	// admin.Get("/cashier/index", controllers.IndexCashier)

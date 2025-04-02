@@ -16,7 +16,7 @@ interface Column {
 
 const columns: readonly Column[] = [
   { id: "nama_paket", label: "Nama Paket" },
-  { id: "price", label: "Price"},
+  { id: "price", label: "Harga"},
 ];
 
 const CoursesContent = () => {
@@ -67,7 +67,7 @@ const CoursesContent = () => {
   if (error) {
     return <div className="p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Paket</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Paket TryOut</h1>
         <Link to="/dashboard/courses/tambahPaket" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
             Tambah Paket TryOut
@@ -96,7 +96,7 @@ const CoursesContent = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Paket</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Paket TryOut</h1>
         <Link to="/dashboard/courses/tambahPaket" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
             Tambah Paket TryOut
@@ -124,10 +124,10 @@ const CoursesContent = () => {
                   </TableCell>                
                 ))}
                 <TableCell align="center">
-                  <Link to={`/dashboard/courses/view/${row.id}`}>
+                  <Link to={`/dashboard/courses/viewPaket/${row.id}`}>
                     <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>
                   </Link>
-                  <Link to={`/dashboard/courses/edit/${row.id}`}>
+                  <Link to={`/dashboard/courses/editPaket/${row.id}`}>
                     <Button variant="contained" color="warning" size="small" sx={{ mr: 3, minWidth: 30 }}><Pencil size={20} /></Button>
                   </Link>
                   <Button variant="contained" color="error" size="small" sx={{ mr: 1, minWidth: 30 }} onClick={() => handleDelete(row.id)}>

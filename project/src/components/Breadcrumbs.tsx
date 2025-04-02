@@ -6,10 +6,18 @@ const breadcrumbMap: { [key: string]: string } = {
   dashboard: "Dashboard",
   home: "Home",
   courses: "Courses",
+  university: "PTN",
+  major: "Program Studi",
   tambahPaket: "Tambah Paket",
   viewPaket: "Detail Paket",
   editPaket: "Update Paket",
   viewSiswa: "Detail Siswa",
+  editSiswa: "Update Siswa",
+  viewPtn: "Detail PTN",
+  editPtn: "Update PTN",
+  tambahMajor: "Tambah Prodi",
+  viewMajor: "Detail Prodi",
+  editProdi: "Update Prodi",
 };
 
 const Breadcrumbs: React.FC = () => {
@@ -17,6 +25,8 @@ const Breadcrumbs: React.FC = () => {
   const pathnames = location.pathname.split('/').filter((x) => x);
   const [packageName, setPackageName] = useState<string | null>(null);
   const [studentName, setStudentName] = useState<string | null>(null);
+  const [ptnName, setPtnName] = useState<string | null>(null);
+  const [majorName, setMajorName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPackageName = async (id: string) => {
@@ -43,6 +53,30 @@ const Breadcrumbs: React.FC = () => {
       }
     };
 
+    const fetchPtnName = async (id: string) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/university/view/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setPtnName(data.nama_ptn);
+        }
+      } catch (error) {
+        console.error("Failed to fetch PTN name", error);
+      }
+    };
+
+    const fetchMajorName = async (id: string) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/major/view/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setMajorName(data.nama_prodi_ptn);
+        }
+      } catch (error) {
+        console.error("Failed to fetch PTN name", error);
+      }
+    };
+
     if (pathnames.length > 2 && pathnames[1] === "students" && pathnames[2] === "viewSiswa") {
       fetchStudentName(pathnames[3]);
     }
@@ -54,6 +88,18 @@ const Breadcrumbs: React.FC = () => {
     }
     if (pathnames.length > 2 && pathnames[1] === "courses" && pathnames[2] === "editPaket") {
       fetchPackageName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "university" && pathnames[2] === "viewPtn") {
+      fetchPtnName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "university" && pathnames[2] === "editPtn") {
+      fetchPtnName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "major" && pathnames[2] === "viewMajor") {
+      fetchMajorName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "major" && pathnames[2] === "editMajor") {
+      fetchMajorName(pathnames[3]);
     }
   }, [pathnames]);
 
@@ -81,6 +127,22 @@ const Breadcrumbs: React.FC = () => {
 
           if (name.match(/\d+/) && studentName && pathnames[index] === "viewSiswa" ) {
             displayName = studentName;
+          }
+
+          if (name.match(/\d+/) && ptnName && pathnames[index] === "editPtn" ) {
+            displayName = ptnName;
+          }
+
+          if (name.match(/\d+/) && ptnName && pathnames[index] === "viewPtn" ) {
+            displayName = ptnName;
+          }
+
+          if (name.match(/\d+/) && majorName && pathnames[index] === "editMajor" ) {
+            displayName = majorName;
+          }
+
+          if (name.match(/\d+/) && majorName && pathnames[index] === "viewMajor" ) {
+            displayName = majorName;
           }
 
           return (

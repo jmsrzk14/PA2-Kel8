@@ -17,7 +17,7 @@ const TambahPaket = () => {
     formData.append("active", active.toString());
     formData.append("price", price.toString());
 
-    console.log("Payload yang dikirim:", formData.toString()); // 🔍 Debugging
+    console.log("Payload yang dikirim:", formData.toString());
 
     try {
       const response = await fetch("http://127.0.0.1:8000/courses/createPacket", {
@@ -58,7 +58,7 @@ const TambahPaket = () => {
         <div>
           <label className="block text-sm font-medium text-gray-700">Total</label>
           <input
-            type="number"
+            type="text"
             className="mt-1 p-2 border rounded w-full"
             value={total}
             onChange={(e) => setTotal(Number(e.target.value))}

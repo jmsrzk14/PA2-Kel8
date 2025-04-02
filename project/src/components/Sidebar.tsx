@@ -44,8 +44,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       ]
     },
     { icon: Users, label: 'Siswa', path: '/dashboard/students/list' },
-    { icon: School, label: 'Perguruan Tinggi', path: '/dashboard/schedule' },
-    { icon: Book, label: 'Program Studi', path: '/dashboard/messages' },
+    { icon: School, label: 'Perguruan Tinggi', path: '/dashboard/university/list' },
+    { icon: Book, label: 'Program Studi', path: '/dashboard/major/list' },
     { icon: ArrowLeftRight, label: 'Simulasi', path: '/dashboard/settings' },
   ];
 

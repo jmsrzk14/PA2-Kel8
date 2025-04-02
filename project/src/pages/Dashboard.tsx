@@ -2,17 +2,29 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import StudentsContent from "./students";
 import CoursesContent from "./courses";
+import MajorContent from "./major";
+import PtnContent from "./ptn";
 import CreateCourses from "./CreateCourses";
+import CreateUniversity from "./CreateUniversity";
+import CreateMajor from "./CreateMajor";
 import UpdateCourses from "./EditCourses";
+import UpdateMajor from "./EditMajor";
+import UpdateUniversity from "./EditUniversity";
+import UpdateStudents from "./EditStudents";
 import ViewCourses from "./ViewCourses";
+import ViewMajor from "./ViewMajor";
 import ViewStudents from "./ViewStudents";
+import ViewUniversity from "./ViewUniversity";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Breadcrumbs from "../components/Breadcrumbs";
 
 const DashboardContent = () => {
   const [time, setTime] = useState(new Date());
+  const [totalPackets, setTotalPackets] = useState(0);
   const [totalStudents, setTotalStudents] = useState(0);
+  const [totalUniversity, setTotalUniversity] = useState(0);
+  const [totalMajor, setTotalMajor] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -24,23 +36,70 @@ const DashboardContent = () => {
   }, []);
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchPackets = async () => {
       setLoading(true);
       setError("");
       try {
         const response = await fetch("http://127.0.0.1:8000/courses/list");
         if (!response.ok) throw new Error("Gagal mengambil data students");
         const data = await response.json();
-        setTotalStudents(data.length);
+        setTotalPackets(data.length);
       } catch (error) {
         console.error("Error fetching students:", error);
-        setError("Gagal memuat jumlah students.");
+        setError("");
       } finally {
         setLoading(false);
       }
     };
-
+    const fetchStudents = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await fetch("http://127.0.0.1:8000/students/list");
+        if (!response.ok) throw new Error("Gagal mengambil data students");
+        const data = await response.json();
+        setTotalStudents(data.length);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setError("");
+      } finally {
+        setLoading(false);
+      }
+    };
+    const fetchUniversity = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await fetch("http://127.0.0.1:8000/university/list");
+        if (!response.ok) throw new Error("Gagal mengambil data students");
+        const data = await response.json();
+        setTotalUniversity(data.length);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setError("");
+      } finally {
+        setLoading(false);
+      }
+    };
+    const fetchMajor = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await fetch("http://127.0.0.1:8000/major/list");
+        if (!response.ok) throw new Error("Gagal mengambil data students");
+        const data = await response.json();
+        setTotalMajor(data.length);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setError("");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPackets();
     fetchStudents();
+    fetchUniversity();
+    fetchMajor();
   }, []);
 
   const formattedDate = time.toLocaleDateString("en-GB", {
@@ -65,20 +124,38 @@ const DashboardContent = () => {
           ) : error ? (
             <p className="text-lg text-red-500">{error}</p>
           ) : (
+            <p className="text-3xl font-bold text-indigo-600">{totalPackets.toLocaleString()}</p>
+          )}
+        </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Jumlah Siswa</h3>
+          {loading ? (
+            <p className="text-lg text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-lg text-red-500">{error}</p>
+          ) : (
             <p className="text-3xl font-bold text-indigo-600">{totalStudents.toLocaleString()}</p>
           )}
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">Perguruan Tinggi Negeri</h3>
-          <p className="text-3xl font-bold text-indigo-600">12</p>
+          {loading ? (
+            <p className="text-lg text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-lg text-red-500">{error}</p>
+          ) : (
+            <p className="text-3xl font-bold text-indigo-600">{totalUniversity.toLocaleString()}</p>
+          )}
         </div>
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Assignments</h3>
-          <p className="text-3xl font-bold text-indigo-600">48</p>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Messages</h3>
-          <p className="text-3xl font-bold text-indigo-600">15</p>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Program Studi</h3>
+          {loading ? (
+            <p className="text-lg text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-lg text-red-500">{error}</p>
+          ) : (
+            <p className="text-3xl font-bold text-indigo-600">{totalMajor.toLocaleString()}</p>
+          )}
         </div>
       </div>
     </div>
@@ -102,6 +179,15 @@ const Dashboard: React.FC = () => {
           <Route path="/courses/viewPaket/:id" element={<ViewCourses />} />
           <Route path="/students/list" element={<StudentsContent />} />
           <Route path="/students/viewSiswa/:username" element={<ViewStudents />} />
+          <Route path="/students/editSiswa/:username" element={<UpdateStudents />} />
+          <Route path="/university/list" element={<PtnContent />} />
+          <Route path="/university/tambahPtn" element={<CreateUniversity />} />
+          <Route path="/university/editPtn/:id_ptn" element={<UpdateUniversity />} />
+          <Route path="/university/viewPtn/:id_ptn" element={<ViewUniversity />} />
+          <Route path="/major/list" element={<MajorContent />} />
+          <Route path="/major/tambahMajor" element={<CreateMajor />} />
+          <Route path="/major/editMajor/:id_prodi" element={<UpdateMajor />} />
+          <Route path="/major/viewMajor/:id_prodi" element={<ViewMajor />} />
           <Route path="/settings" element={<div className="p-6">Settings Content</div>} />
         </Routes>
       </div>
