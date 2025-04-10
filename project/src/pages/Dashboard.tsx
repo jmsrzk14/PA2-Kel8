@@ -40,7 +40,7 @@ const DashboardContent = () => {
       setLoading(true);
       setError("");
       try {
-        const response = await fetch("http://127.0.0.1:8000/courses/list");
+        const response = await fetch("http://127.0.0.1:8000/admin/listPacket");
         if (!response.ok) throw new Error("Gagal mengambil data students");
         const data = await response.json();
         setTotalPackets(data.length);
@@ -55,7 +55,7 @@ const DashboardContent = () => {
       setLoading(true);
       setError("");
       try {
-        const response = await fetch("http://127.0.0.1:8000/students/list");
+        const response = await fetch("http://127.0.0.1:8000/admin/listStudent");
         if (!response.ok) throw new Error("Gagal mengambil data students");
         const data = await response.json();
         setTotalStudents(data.length);
@@ -70,7 +70,7 @@ const DashboardContent = () => {
       setLoading(true);
       setError("");
       try {
-        const response = await fetch("http://127.0.0.1:8000/university/list");
+        const response = await fetch("http://127.0.0.1:8000/admin/listUniversity");
         if (!response.ok) throw new Error("Gagal mengambil data students");
         const data = await response.json();
         setTotalUniversity(data.length);
@@ -85,7 +85,7 @@ const DashboardContent = () => {
       setLoading(true);
       setError("");
       try {
-        const response = await fetch("http://127.0.0.1:8000/major/list");
+        const response = await fetch("http://127.0.0.1:8000/admin/listMajor");
         if (!response.ok) throw new Error("Gagal mengambil data students");
         const data = await response.json();
         setTotalMajor(data.length);
@@ -118,7 +118,7 @@ const DashboardContent = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Dashboard cards */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Paket TryOut</h3>
+          <h3 className="text-md font-semibold text-gray-700 mb-2">Paket TryOut</h3>
           {loading ? (
             <p className="text-lg text-gray-500">Loading...</p>
           ) : error ? (
@@ -128,7 +128,7 @@ const DashboardContent = () => {
           )}
         </div>
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Jumlah Siswa</h3>
+          <h3 className="text-md font-semibold text-gray-700 mb-2">Jumlah Siswa</h3>
           {loading ? (
             <p className="text-lg text-gray-500">Loading...</p>
           ) : error ? (
@@ -138,7 +138,7 @@ const DashboardContent = () => {
           )}
         </div>
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Perguruan Tinggi Negeri</h3>
+          <h3 className="text-md font-semibold text-gray-700 mb-2">Perguruan Tinggi Negeri</h3>
           {loading ? (
             <p className="text-lg text-gray-500">Loading...</p>
           ) : error ? (
@@ -148,7 +148,7 @@ const DashboardContent = () => {
           )}
         </div>
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Program Studi</h3>
+          <h3 className="text-md font-semibold text-gray-700 mb-2">Program Studi</h3>
           {loading ? (
             <p className="text-lg text-gray-500">Loading...</p>
           ) : error ? (

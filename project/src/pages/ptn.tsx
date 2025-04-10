@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button } from "@mui/material";
+import {
+  TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
+  Button, TablePagination, TextField
+} from "@mui/material";
 import { Eye, Pencil, Trash } from 'lucide-react';
+import Swal from 'sweetalert2';
 
-type MajorPackage = {
+type UniversityPackage = {
   id_ptn: number;
   nama_ptn: string;
   nama_singkat: string;
 };
 
 interface Column {
-  id: keyof MajorPackage; 
+  id: keyof UniversityPackage; 
   label: string;
 }
 
@@ -20,54 +24,94 @@ const columns: readonly Column[] = [
 ];
 
 const PtnContent = () => {
-  const [packages, setPackages] = useState<MajorPackage[]>([]);
+  const [university, setUniversity] = useState<UniversityPackage[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [filteredUniversity, setFilteredUniversity] = useState<UniversityPackage[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/university/list");
-        if (!response.ok) {
-          throw new Error("Data tidak ditemukan!");
-        }
-        const data: MajorPackage[] = await response.json();
-        console.log("API Response:", data);
-        setPackages(data);
+        const response = await fetch("http://127.0.0.1:8000/admin/listUniversity");
+        if (!response.ok) throw new Error("Data tidak ditemukan!");
+        const data: UniversityPackage[] = await response.json();
+        setUniversity(data);
+        setFilteredUniversity(data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
+  useEffect(() => {
+      const filtered = university.filter((campus) =>
+        campus.nama_ptn.toLowerCase().includes(searchQuery.toLowerCase()) || campus.nama_singkat.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredUniversity(filtered);
+      setPage(0);
+    }, [searchQuery, university]);
+
   const handleDelete = async (id: number) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus paket ini?")) {
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Data universitas akan dihapus secara permanen!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+    if (result.isConfirmed) {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/university/list/${id}`, {
+        const response = await fetch(`http://127.0.0.1:8000/admin/listUniversity/${id}`, {
           method: "DELETE",
         });
-        if (!response.ok) {
-          throw new Error("Gagal menghapus paket");
+        if (!response.ok) throw new Error("Gagal menghapus universitas");
+          Swal.fire('Terhapus!', 'Data universitas berhasil dihapus.', 'success').then(() => {
+            window.location.reload();
+          });
+        } catch (error) {
+          Swal.fire('Gagal!', (error as Error).message || 'Terjadi kesalahan saat menghapus.', 'error');
         }
-        setPackages((prev) => prev.filter((item) => item.id_ptn !== id));
-      } catch (error) {
-        alert(error);
       }
-    }
+    });
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
 
   if (loading) {
     return <p className="text-gray-700 text-center">Loading...</p>;
   }
 
+  const paginatedData = filteredUniversity.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   if (error) {
     return <div className="p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Perguruan Tinggi Negeri</h1>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 mb-[1em]">Daftar Perguruan Tinggi Negeri</h1>
+          <TextField
+            label="Cari Nama PTN"
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <Link to="/dashboard/university/tambahPaket" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
             Tambah PTN
@@ -96,7 +140,16 @@ const PtnContent = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Perguruan Tinggi Negeri</h1>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 mb-[1em]">Daftar Perguruan Tinggi Negeri</h1>
+          <TextField
+            label="Cari Nama PTN"
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <Link to="/dashboard/university/tambahPtn" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
             Tambah PTN
@@ -115,14 +168,21 @@ const PtnContent = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {packages.map((row, index) => (
-              <TableRow hover tabIndex={-1} key={row.id_ptn} align="center">
-                <TableCell>{index + 1}</TableCell>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align="center">
-                    {row[column.id]}
-                  </TableCell>                
-                ))}
+            {paginatedData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  <p className="text-red-500">Data tidak ditemukan!</p>
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginatedData.map((row, index) => (
+                <TableRow hover tabIndex={-1} key={row.username}>
+                  <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align="center">
+                      {row[column.id]}
+                    </TableCell>
+                  ))}
                 <TableCell align="center">
                   <Link to={`/dashboard/university/viewPtn/${row.id_ptn}`}>
                     <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>
@@ -135,10 +195,21 @@ const PtnContent = () => {
                   </Button>
                 </TableCell>
               </TableRow>
-            ))}
+            ))
+          )}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <TablePagination
+        component="div"
+        count={filteredUniversity.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Baris per halaman"
+      />
     </div>
   );
 };

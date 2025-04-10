@@ -6,7 +6,7 @@ import {
   Users, 
   School, 
   Book, 
-  ArrowLeftRight,
+  Megaphone,
   MenuIcon,
   ChevronDown, 
   ChevronLeft
@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     { icon: Users, label: 'Siswa', path: '/dashboard/students/list' },
     { icon: School, label: 'Perguruan Tinggi', path: '/dashboard/university/list' },
     { icon: Book, label: 'Program Studi', path: '/dashboard/major/list' },
-    { icon: ArrowLeftRight, label: 'Simulasi', path: '/dashboard/settings' },
+    { icon: Megaphone, label: 'Pengumuman', path: '/dashboard/settings' },
   ];
 
   return (
@@ -86,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
                 </button>
                 {isDropdownOpen && (
                   <div className={`
-                    ${isOpen ? 'lg:ml-6 lg:static lg:bg-transparent' : 'absolute left-full top-0 ml-2'} 
+                    ${isOpen ? 'lg:ml-6 lg:static lg:bg-transparent sm:absolute left-full top-0 ml-2 min-w-[200px] p-2  sx:absolute left-full top-0 ml-2 z-50' : 'absolute left-full top-0 ml-2 z-50'} 
                     bg-[#00879E] rounded-lg 
                     ${!isOpen ? 'min-w-[200px] p-2' : ''}
                   `}>

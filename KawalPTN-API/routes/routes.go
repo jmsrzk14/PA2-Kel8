@@ -1,7 +1,7 @@
 package routes
 
 import (
-	controllers "KawalPTN-API/controllers"
+	controllers "KawalPTN-API/controllers/admin"
 	// "KawalPTN-API/middleware"
 
 	// cashierController "KawalPTN-API/controllers/cashier"
@@ -11,36 +11,35 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	admin := app.Group("/courses")
+	admin := app.Group("/admin")
 
-	//Auth Admin
-	// admin.Post("/register", controllers.Register)
+	admin.Post("/login", controllers.Login)
+	admin.Post("/register", controllers.Register)
+	admin.Post("/logout", controllers.Logout)
+
 	admin.Post("/createPacket", controllers.CreatePacket)
-	admin.Get("/list", controllers.IndexPacket)
-	admin.Get("/view/:id", controllers.ShowPacket)
-	admin.Put("/edit/:id", controllers.UpdatePacket)
-	admin.Delete("/list/:id", controllers.DeletePacket)
-	// admin.Post("/logout", controllers.Logout)
+	admin.Get("/listPacket", controllers.IndexPacket)
+	admin.Get("/viewPacket/:id", controllers.ShowPacket)
+	admin.Put("/editPacket/:id", controllers.UpdatePacket)
+	admin.Delete("/listPacket/:id", controllers.DeletePacket)
 
-	student := app.Group("/students")
-	student.Get("/list", controllers.IndexStudent)
-	student.Get("/view/:username", controllers.ShowStudent)
-	student.Delete("/list/:username", controllers.DeleteStudent)
-	student.Put("/edit/:username", controllers.UpdateStudent)
+	admin.Get("/listStudent", controllers.IndexStudent)
+	admin.Get("/viewStudent/:username", controllers.ShowStudent)
+	admin.Delete("/listStudent/:username", controllers.DeleteStudent)
+	admin.Put("/editStudent/:username", controllers.UpdateStudent)
 
-	university := app.Group("/university")
-	university.Post("/createUniversity", controllers.CreateUniversity)
-	university.Get("/list", controllers.IndexUniversity)
-	university.Get("/view/:id_ptn", controllers.ShowUniversity)
-	university.Put("/edit/:id_ptn", controllers.UpdateUniversity)
-	university.Delete("/list/:id_ptn", controllers.DeleteUniversity)
+	admin.Post("/createUniversity", controllers.CreateUniversity)
+	admin.Get("/listUniversity", controllers.IndexUniversity)
+	admin.Get("/viewUniversity/:id_ptn", controllers.ShowUniversity)
+	admin.Put("/editUniversity/:id_ptn", controllers.UpdateUniversity)
+	admin.Delete("/listUniversity/:id_ptn", controllers.DeleteUniversity)
 
-	major := app.Group("/major")
-	major.Post("/createMajor", controllers.CreateMajor)
-	major.Get("/list", controllers.IndexMajor)
-	major.Get("/view/:id_prodi", controllers.ShowMajor)
-	major.Put("/edit/:id_prodi", controllers.UpdateMajor)
-	major.Delete("/list/:id_prodi", controllers.DeleteMajor)
+	admin.Post("/createMajor", controllers.CreateMajor)
+	admin.Get("/listMajor", controllers.IndexMajor)
+	admin.Get("/viewMajor/:id_prodi", controllers.ShowMajor)
+	admin.Put("/editMajor/:id_prodi", controllers.UpdateMajor)
+	admin.Delete("/listMajor/:id_prodi", controllers.DeleteMajor)
+	
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)
 	// admin.Get("/cashier/index", controllers.IndexCashier)

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const EditSiswa = () => {
   const { username } = useParams(); 
@@ -12,14 +13,14 @@ const EditSiswa = () => {
   useEffect(() => {
     const fetchPaket = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/students/view/${username}`);
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewStudent/${username}`);
         if (!response.ok) throw new Error('Gagal mengambil data paket');
         const data = await response.json();
         console.log("Data dari API:", data);
         
         setFirstName(data.first_name);
-        setNoUtbk(data.no_utbk.toString());
-        setNisn(data.nisn.toString());
+        setNoUtbk(data.no_utbk);
+        setNisn(data.nisn);
         setGrade(data.grade);
       } catch (error) {
         console.error("Error fetching paket:", error);
@@ -40,27 +41,50 @@ const EditSiswa = () => {
 
     console.log("Payload yang dikirim:", formData.toString());
 
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/students/edit/${username}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-      });
+    Swal.fire({
+          title: 'Apakah Anda yakin?',
+          text: "Data siswa tidak akan dapat dikembalikan!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#33',
+          confirmButtonText: 'Ya, Edit!',
+          cancelButtonText: 'Batal'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await fetch(`http://127.0.0.1:8000/admin/editStudent/${username}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData.toString(),
+              });
 
-      const result = await response.json();
-      console.log("Response API:", result);
-
-      if (response.ok) {
-        navigate("/dashboard/students/list");
-      } else {
-        alert("Gagal mengupdate paket");
-      }
-    } catch (error) {
-      console.error("Error saat mengupdate paket", error);
-    }
-  };
+              if (!response.ok) {
+                throw new Error("Gagal mengedit siswa");
+              }
+      
+              Swal.fire({
+                title: 'Berhasil!',
+                text: 'Data siswa berhasil diubah.',
+                icon: 'success',
+                confirmButtonColor: '#33',
+              }).then(() => {
+                navigate('/dashboard/students/list');
+              });
+      
+            } catch (error) {
+              Swal.fire({
+                title: 'Gagal!',
+                text: (error as Error).message || 'Terjadi kesalahan saat menghapus.',
+                icon: 'error',
+                confirmButtonColor: '#d3085d6',
+              });
+            }
+          }
+        });
+      };
 
   return (
     <div className="p-6">
@@ -81,7 +105,7 @@ const EditSiswa = () => {
           <input
             type="text"
             className="mt-1 p-2 border rounded w-full"
-            value={no_utbk}
+            value={no_utbk || "0"}
             onChange={(e) => {
               const rawValue = e.target.value.replace(/\D/g, "");
               setNoUtbk(rawValue);

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button } from "@mui/material";
+import {
+  TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
+  Button, TablePagination, TextField
+} from "@mui/material";
 import { Eye, Pencil, Trash } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 type MajorPackage = {
   id_prodi: number;
@@ -25,19 +29,22 @@ const getLastWord = (text: string) => {
 };
 
 const MajorContent = () => {
-  const [packages, setPackages] = useState<MajorPackage[]>([]);
+  const [major, setMajor] = useState<MajorPackage[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [filteredMajor, setFilteredMajor] = useState<MajorPackage[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/major/list");
-        if (!response.ok) {
-          throw new Error("Data tidak ditemukan!");
-        }
+        const response = await fetch("http://127.0.0.1:8000/admin/listMajor");
+        if (!response.ok) throw new Error("Data tidak ditemukan!");
         const data: MajorPackage[] = await response.json();
-        setPackages(data);
+        setMajor(data);
+        setFilteredMajor(data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -47,20 +54,49 @@ const MajorContent = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const filtered = major.filter((major) =>
+      major.nama_prodi.toLowerCase().includes(searchQuery.toLowerCase()) || major.nama_prodi_ptn.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredMajor(filtered);
+    setPage(0);
+  }, [searchQuery, major]);
+
   const handleDelete = async (id: number) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus paket ini?")) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/major/list/${id}`, {
-          method: "DELETE",
-        });
-        if (!response.ok) {
-          throw new Error("Gagal menghapus paket");
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Data Program Studi akan dihapus secara permanen!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`http://127.0.0.1:8000/admin/listMajor/${id}`, {
+            method: "DELETE",
+          });
+            if (!response.ok) throw new Error("Gagal menghapus Program Studi");             
+            Swal.fire('Terhapus!', 'Data Program Studi berhasil dihapus.', 'success').then(() => {
+              window.location.reload();
+            });
+          } catch (error) {
+            Swal.fire('Gagal!', (error as Error).message || 'Terjadi kesalahan saat menghapus.', 'error');
+          }
         }
-        setPackages((prev) => prev.filter((item) => item.id_prodi !== id));
-      } catch (error) {
-        alert(error);
       }
-    }
+    );
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
 
   if (loading) {
@@ -70,7 +106,16 @@ const MajorContent = () => {
   if (error) {
     return <div className="p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Prodi PTN</h1>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 mb-[1em]">Daftar Siswa</h1>
+          <TextField
+            label="Cari Nama Siswa"
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <Link to="/dashboard/major/tambahMajor" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
             Tambah Prodi
@@ -116,7 +161,7 @@ const MajorContent = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {packages.map((row, index) => (
+            {major.map((row, index) => (
               <TableRow key={row.id_prodi} hover>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell align="center">{row.nama_prodi}</TableCell>

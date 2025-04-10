@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const TambahPaket = () => {
   const [namaPaket, setNamaPaket] = useState('');
@@ -20,7 +21,7 @@ const TambahPaket = () => {
     console.log("Payload yang dikirim:", formData.toString());
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/courses/createPacket", {
+      const response = await fetch("http://127.0.0.1:8000/admin/createPacket", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -28,18 +29,23 @@ const TambahPaket = () => {
         body: formData.toString(),
       });
 
-      const result = await response.json();
-      console.log("Response API:", result);
-
-      if (response.ok) {
-        navigate("/dashboard/courses/list");
-      } else {
-        alert("Gagal menambahkan paket");
-      }
-    } catch (error) {
-      console.error("Error saat menambahkan paket", error);
-    }
-  };
+      Swal.fire({
+          title: 'Berhasil!',
+          text: 'Data Paket TryOut berhasil ditambahkan.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+        }).then(() => {
+          navigate("/dashboard/courses/list")
+        });
+      } catch (error) {
+        Swal.fire({
+          title: 'Gagal!',
+          text: (error as Error).message || 'Terjadi kesalahan saat menambahkan.',
+          icon: 'error',
+          confirmButtonColor: '#d33',
+        });
+    };
+  }
 
   return (
     <div className="p-6">

@@ -97,7 +97,7 @@ func ShowStudent(ctx *fiber.Ctx) error {
 		First(&school).Error
 
 	if err != nil {
-		school.Sekolah = "Tidak Diketahui"
+		school.Sekolah = "-"
 	}
 
 	var prodi1 struct {
@@ -110,7 +110,7 @@ func ShowStudent(ctx *fiber.Ctx) error {
 		First(&prodi1).Error
 
 	if err != nil {
-		prodi1.Prodi1 = "Tidak Diketahui"
+		prodi1.Prodi1 = "-"
 	}
 
 	var prodi2 struct {
@@ -123,7 +123,7 @@ func ShowStudent(ctx *fiber.Ctx) error {
 		First(&prodi2).Error
 
 	if err != nil {
-		prodi2.Prodi2 = "Tidak Diketahui"
+		prodi2.Prodi2 = "-"
 	}
 
 	var prodi1_aktual struct {
@@ -136,7 +136,7 @@ func ShowStudent(ctx *fiber.Ctx) error {
 		First(&prodi1_aktual).Error
 
 	if err != nil {
-		prodi1_aktual.Prodi1_aktual = "Tidak Diketahui"
+		prodi1_aktual.Prodi1_aktual = "-"
 	}
 
 	var prodi2_aktual struct {
@@ -149,7 +149,7 @@ func ShowStudent(ctx *fiber.Ctx) error {
 		First(&prodi2_aktual).Error
 
 	if err != nil {
-		prodi2_aktual.Prodi2_aktual = "Tidak Diketahui"
+		prodi2_aktual.Prodi2_aktual = "-"
 	}
 
 	response := fiber.Map{

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button } from "@mui/material";
+import {
+  TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
+  Button, TablePagination, TextField
+} from "@mui/material";
 import { Eye, Pencil, Trash } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 type Students = {
   username: string;
@@ -11,54 +15,86 @@ type Students = {
 };
 
 interface Column {
-  id: keyof Students; 
+  id: keyof Students;
   label: string;
 }
 
 const columns: readonly Column[] = [
   { id: "first_name", label: "Nama" },
-  { id: "kelompok_ujian", label: "Kelompok Ujian"},
+  { id: "kelompok_ujian", label: "Kelompok Ujian" },
 ];
 
 const StudentsContent = () => {
-  const [packages, setPackages] = useState<Students[]>([]);
+  const [students, setStudents] = useState<Students[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<Students[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/students/list");
-        if (!response.ok) {
-          throw new Error("Data tidak ditemukan!");
-        }
+        const response = await fetch("http://127.0.0.1:8000/admin/listStudent");
+        if (!response.ok) throw new Error("Data tidak ditemukan!");
         const data: Students[] = await response.json();
-        console.log("API Response:", data);
-        setPackages(data);
+        setStudents(data);
+        setFilteredStudents(data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const filtered = students.filter((student) =>
+      student.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredStudents(filtered);
+    setPage(0);
+  }, [searchQuery, students]);
+
   const handleDelete = async (username: string) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus siswa ini?")) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/students/list/${username}`, {
-          method: "DELETE",
-        });
-        if (!response.ok) {
-          throw new Error("Gagal menghapus siswa");
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Data siswa akan dihapus secara permanen!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`http://127.0.0.1:8000/admin/listStudent/${username}`, {
+            method: "DELETE",
+          });
+
+          if (!response.ok) throw new Error("Gagal menghapus siswa");
+
+          Swal.fire('Terhapus!', 'Data siswa berhasil dihapus.', 'success').then(() => {
+            window.location.reload();
+          });
+
+        } catch (error) {
+          Swal.fire('Gagal!', (error as Error).message || 'Terjadi kesalahan saat menghapus.', 'error');
         }
-        window.location.reload();
-      } catch (error) {
-        alert(error);
       }
-    }
+    });
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
 
   if (loading) {
@@ -67,43 +103,55 @@ const StudentsContent = () => {
 
   if (error) {
     return <div className="p-6">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Siswa</h1>
-      </div>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell  width={100}>No</TableCell>
-              {columns.map((column) => (
-                <TableCell width={400} align="center" key={column.id}>{column.label}</TableCell>
-              ))}
-              <TableCell width={250} align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableCell colspan={4} align="center"><p className="text-red-500">Data tidak ditemukan!</p></TableCell>
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <div className="mb-4">
+      <h1 className="text-2xl font-bold text-gray-800 mb-[1em]">Daftar Siswa</h1>
+      <TextField
+        label="Cari Nama Siswa"
+        variant="outlined"
+        size="small"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+    </div>
+    <TableContainer sx={{ maxHeight: 440 }}>
+      <Table stickyHeader aria-label="sticky table">
+        <TableHead>
+          <TableRow>
+            <TableCell  width={100}>No</TableCell>
+            {columns.map((column) => (
+              <TableCell width={400} align="center" key={column.id}>{column.label}</TableCell>
+            ))}
+            <TableCell width={250} align="center">Action</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableCell colspan={4} align="center"><p className="text-red-500">Data tidak ditemukan!</p></TableCell>
+        </TableBody>
+      </Table>
+    </TableContainer>
     </div>
   }
+  
+  const paginatedData = filteredStudents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <div className="p-6">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Siswa</h1>
-        <Link to="/dashboard/courses/tambahPaket" className="font-medium text-sm">
-          <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
-            Tambah Paket TryOut
-          </button>
-        </Link>
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold text-gray-800 mb-[1em]">Daftar Siswa</h1>
+        <TextField
+          label="Cari Nama Siswa"
+          variant="outlined"
+          size="small"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
+
+      <TableContainer sx={{ maxHeight: 440, marginTop: 5 }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell  width={100}>No</TableCell>
+              <TableCell width={100}>No</TableCell>
               {columns.map((column) => (
                 <TableCell width={400} align="center" key={column.id}>{column.label}</TableCell>
               ))}
@@ -111,30 +159,48 @@ const StudentsContent = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {packages.map((row, index) => (
-              <TableRow hover tabIndex={-1} key={row.username} align="center">
-                <TableCell>{index + 1}</TableCell>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align="center">
-                      {row[column.id]}
-                  </TableCell>                
-                ))}
-                <TableCell align="center">
-                  <Link to={`/dashboard/students/viewSiswa/${row.username}`}>
-                    <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>
-                  </Link>
-                  <Link to={`/dashboard/students/editSiswa/${row.username}`}>
-                    <Button variant="contained" color="warning" size="small" sx={{ mr: 3, minWidth: 30 }}><Pencil size={20} /></Button>
-                  </Link>
-                  <Button variant="contained" color="error" size="small" sx={{ mr: 1, minWidth: 30 }} onClick={() => handleDelete(row.username)}>
-                    <Trash size={20} />
-                  </Button>
+            {paginatedData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  <p className="text-red-500">Data tidak ditemukan!</p>
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              paginatedData.map((row, index) => (
+                <TableRow hover tabIndex={-1} key={row.username}>
+                  <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align="center">
+                      {row[column.id]}
+                    </TableCell>
+                  ))}
+                  <TableCell align="center">
+                    <Link to={`/dashboard/students/viewSiswa/${row.username}`}>
+                      <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>
+                    </Link>
+                    <Link to={`/dashboard/students/editSiswa/${row.username}`}>
+                      <Button variant="contained" color="warning" size="small" sx={{ mr: 3, minWidth: 30 }}><Pencil size={20} /></Button>
+                    </Link>
+                    <Button variant="contained" color="error" size="small" sx={{ mr: 1, minWidth: 30 }} onClick={() => handleDelete(row.username)}>
+                      <Trash size={20} />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <TablePagination
+        component="div"
+        count={filteredStudents.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Baris per halaman"
+      />
     </div>
   );
 };

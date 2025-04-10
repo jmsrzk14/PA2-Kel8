@@ -15,14 +15,15 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-        AllowOrigins: "*", 
+        AllowOrigins: "http://localhost:5173", 
         AllowMethods: "GET,POST,PUT,DELETE",
         AllowHeaders: "Content-Type, Authorization",
+		AllowCredentials: true,
     }))
 
 	routes.Setup(app)
 
-	err := app.Listen(":8000")
+	err := app.Listen("0.0.0.0:8000")
 	if err != nil {
 		log.Fatal(err)
 	}
