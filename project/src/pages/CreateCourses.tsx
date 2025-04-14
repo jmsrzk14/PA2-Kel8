@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const TambahPaket = () => {
   const [namaPaket, setNamaPaket] = useState('');
-  const [total, setTotal] = useState(0);
-  const [active, setActive] = useState(0);
-  const [price, setPrice] = useState(0);
+  const [total, setTotal] = useState('');
+  const [active, setActive] = useState('');
+  const [price, setPrice] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new URLSearchParams();
@@ -67,7 +67,10 @@ const TambahPaket = () => {
             type="text"
             className="mt-1 p-2 border rounded w-full"
             value={total}
-            onChange={(e) => setTotal(Number(e.target.value))}
+            onChange={(e) => {
+              const rawValue = e.target.value.replace(/\D/g, "");
+              setTotal(rawValue);
+            }}
             required
           />
         </div>
@@ -77,21 +80,24 @@ const TambahPaket = () => {
             type="number"
             className="mt-1 p-2 border rounded w-full"
             value={active}
-            onChange={(e) => setActive(Number(e.target.value))}
+            onChange={(e) => {
+              const rawValue = e.target.value.replace(/\D/g, "");
+              setActive(rawValue);
+            }}
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Price</label>
+          <label className="block text-sm font-medium text-gray-700">Harga</label>
           <div className="mt-1 flex items-center border rounded w-full">
             <span className="p-2">Rp.</span>
             <input
-              type="number"
+              type="text"
               className="p-2 flex-1 outline-none"
-              value={price.toLocaleString("id-ID")}
+              value={price.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
               onChange={(e) => {
                 const rawValue = e.target.value.replace(/\D/g, "");
-                setPrice(Number(rawValue));
+                setPrice(rawValue);
               }}
               required
             />

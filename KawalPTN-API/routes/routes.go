@@ -40,6 +40,8 @@ func Setup(app *fiber.App) {
 	admin.Put("/editMajor/:id_prodi", controllers.UpdateMajor)
 	admin.Delete("/listMajor/:id_prodi", controllers.DeleteMajor)
 	
+	admin.Post("/createScore", controllers.CreateScore)
+	admin.Get("/viewScore/:id_siswa", controllers.ShowScore)
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)
 	// admin.Get("/cashier/index", controllers.IndexCashier)

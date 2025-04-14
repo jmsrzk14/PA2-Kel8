@@ -39,11 +39,11 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-cover bg-center" style={{ backgroundImage: "url('/ice.jpg')" }}>
+      <div className="relative z-10 w-full max-w-md bg-white bg-opacity-90 shadow-lg rounded-xl p-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <img 
-              src="/kawal.jpg" 
+              src="/kawalbg.png" 
               alt="Kawal PTN"
               className="w-[20em] sm:w-30 md:w-30 lg:w-[15em] h-auto object-cover mb-[-2em]" 
           />
@@ -57,7 +57,6 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
             create a new account
           </Link>
         </p>
-      </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
@@ -135,6 +134,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 };

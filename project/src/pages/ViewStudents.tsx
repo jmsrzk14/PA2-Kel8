@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ClipboardList } from 'lucide-react';
 
 const LihatSiswa = () => {
-  const { username } = useParams();
+  const { username, id } = useParams();
   const [activeTab, setActiveTab] = useState('dataDiri');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -17,13 +17,34 @@ const LihatSiswa = () => {
   const [pilihan2Utbk, setPilihan2Utbk] = useState('');
   const [pilihan1UtbkAktual, setPilihan1UtbkAktual] = useState('');
   const [pilihan2UtbkAktual, setPilihan2UtbkAktual] = useState('');
+  const [pu, setPu] = useState('');
+  const [ppu, setPpu] = useState('');
+  const [pbm, setPbm] = useState('');
+  const [pk, setPk] = useState('');
+  const [lbi, setLbi] = useState('');
+  const [lbe, setLbe] = useState('');
+  const [pm, setPm] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [scoresByYear, setScoresByYear] = useState<Record<string, ScorePerYear>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  type ScorePerYear = {
+    pu: number;
+    ppu: number;
+    pbm: number;
+    pk: number;
+    lbi: number;
+    lbe: number;
+    pm: number;
+    total: number;
+  };  
 
   useEffect(() => {
     const fetchPaket = async () => {
       setLoading(true);
       setError('');
+      console.log("ID Siswa dari params:", id);
       try {
         const response = await fetch(`http://127.0.0.1:8000/admin/viewStudent/${username}`);
         if (!response.ok) throw new Error('Gagal mengambil data siswa');
@@ -50,10 +71,41 @@ const LihatSiswa = () => {
       }
     };
 
+    const fetchScore = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewScore/${id}`);
+        if (!response.ok) throw new Error('Gagal mengambil data nilai');
+        const data = await response.json();
+        console.log("Data dari API:", data);
+
+        setScoresByYear(data);
+        const years = Object.keys(data);
+        if (years.length > 0) setSelectedYear(years[0]);
+
+        setPu(data.pu);
+        setPpu(data.ppu);
+        setPbm(data.pbm);
+        setPk(data.pk);
+        setLbe(data.lbe);
+        setLbi(data.lbi);
+        setPm(data.pm);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError('Gagal memuat data. Silakan coba lagi.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (username) {
       fetchPaket();
     }
-  }, [username]);
+    if (id) {
+      fetchScore();
+    }
+  }, [username, id]);
 
   if (loading) return <div className="p-6 text-center">Memuat data...</div>;
   if (error) return <div className="p-6 text-red-500 text-center">{error}</div>;
@@ -62,12 +114,20 @@ const LihatSiswa = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Detail Data Siswa</h1>
-        <Link to="/dashboard/university/tambahPaket" className="font-medium text-sm">
-          <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
-            <ClipboardList size={20} className='mr-2' />
-            Input Nilai Siswa
-          </button>
-        </Link>
+        <div>
+          <Link to={`/dashboard/score/tambahNilai/${username}`} className="font-medium text-sm">
+            <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors mb-4">
+              <ClipboardList size={20} className='mr-2' />
+              Input Nilai Siswa
+            </button>
+          </Link>
+          <Link to={`/dashboard/score/tambahNilai/${username}`} className="font-medium text-sm">
+            <button className="flex items-center bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-2 rounded-md transition-colors">
+              <ClipboardList size={20} className='mr-2' />
+              Input Nilai Siswa
+            </button>
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -86,7 +146,6 @@ const LihatSiswa = () => {
         </button>
       </div>
 
-      {/* Tab Content */}
       <div className="bg-gray-100 p-4 rounded-b-md space-y-4">
         {activeTab === 'dataDiri' && (
           <>
@@ -107,13 +166,30 @@ const LihatSiswa = () => {
 
         {activeTab === 'nilai' && (
           <>
-            <p><strong>Penalaran Umum:</strong></p>
-            <p><strong>Pengetahuan dan Pemahaman Umum:</strong></p>
-            <p><strong>Pemahaman Bacaan dan Menulis:</strong></p>
-            <p><strong>Pengetahun Kuantitatif:</strong></p>
-            <p><strong>Literasi Bahasa Indonesia:</strong></p>
-            <p><strong>Literasi Bahasa Inggris:</strong></p>
-            <p><strong>Penalaran Matematika:</strong></p>
+            <div className="mb-4 flex items-center">
+              <label htmlFor="tahun" className="block mb-1 mr-4 font-semibold">Tahun:</label>
+              <select
+                id="tahun"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="p-2 border border-gray-300 rounded-md"
+              >
+                {Object.keys(scoresByYear).map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
+            {selectedYear && scoresByYear[selectedYear] && (
+              <>
+                <p><strong>Penalaran Umum:</strong> {scoresByYear[selectedYear].pu || "-"}</p>
+                <p><strong>Pengetahuan dan Pemahaman Umum:</strong> {scoresByYear[selectedYear].ppu || "-"}</p>
+                <p><strong>Pemahaman Bacaan dan Menulis:</strong> {scoresByYear[selectedYear].pbm || "-"}</p>
+                <p><strong>Pengetahun Kuantitatif:</strong> {scoresByYear[selectedYear].pk || "-"}</p>
+                <p><strong>Literasi Bahasa Indonesia:</strong> {scoresByYear[selectedYear].lbi || "-"}</p>
+                <p><strong>Literasi Bahasa Inggris:</strong> {scoresByYear[selectedYear].lbe || "-"}</p>
+                <p><strong>Penalaran Matematika:</strong> {scoresByYear[selectedYear].pm || "-"}</p>
+              </>
+            )}
           </>
         )}
       </div>

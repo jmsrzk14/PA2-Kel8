@@ -75,7 +75,7 @@ func ShowStudent(ctx *fiber.Ctx) error {
 	var student models.T_Siswa
 
 	err := database.DB.Model(&student).
-		Select("username, active, nisn, first_name, grade, last_name, no_utbk, pilihan1_utbk, pilihan2_utbk, pilihan1_utbk_aktual, pilihan2_utbk_aktual, kelompok_ujian, asal_sekolah").
+		Select("id, username, active, nisn, first_name, grade, last_name, no_utbk, pilihan1_utbk, pilihan2_utbk, pilihan1_utbk_aktual, pilihan2_utbk_aktual, kelompok_ujian, asal_sekolah").
 		Where("username = ?", StudentIDStr).
 		First(&student).Error
 
@@ -153,6 +153,7 @@ func ShowStudent(ctx *fiber.Ctx) error {
 	}
 
 	response := fiber.Map{
+		"id":                 student.ID,
 		"username":           student.Username,
 		"first_name":         student.First_Name,
 		"last_name":          student.Last_Name,

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell, User, LogOut, ChevronDown } from 'lucide-react';
 import { Link,useNavigate } from 'react-router-dom';
 
 
@@ -32,27 +32,24 @@ const Navbar: React.FC = () => {
   return (
     <div className="h-[4.5em] shadow-sm flex items-center justify-between px-4" style={{ backgroundColor: "#A3D1C6" }}>
       <div className="flex items-center gap-2">
-        <h2 className="text-gray-700 text-lg font-semibold">Welcome, Teacher</h2>
+        <h2 className="text-gray-700 text-lg font-semibold">Welcome, Admin</h2>
       </div>
       <div className="flex items-center gap-4" ref={menuRef}>
         <button className="p-2 rounded-full hover:bg-gray-100">
           <Bell size={20} className="text-gray-600" />
         </button>
-        <div className="relative">
-          <button 
-            className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center" 
-            onClick={toggleMenu}
-          >
-            <User size={20} className="text-indigo-600" />
+        <div className="relative inline-block">
+          <button className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition" onClick={() => setMenuOpen(!menuOpen)}>
+            <User size={20} className="text-gray-700" />
+            <ChevronDown size={16} className="text-gray-700" />
           </button>
           {menuOpen && (
             <div className="absolute right-0 mt-2 w-28 bg-white border rounded-lg shadow-lg z-10">
-              <button 
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
+              <div className='absolute right-0 mt-2 bg-white border rounded-lg shadow-lg'>
+                <button className='w-full flex items-center gap-2 px-2 py-3 text-red-600 font-medium hover:bg-red-100 rounded-md transition' onClick={handleLogout}>
+                  <LogOut size={16} />Log Out
+                </button>
+              </div>
             </div>
           )}
         </div>

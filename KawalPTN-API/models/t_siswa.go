@@ -7,6 +7,7 @@ import (
 )
 
 type T_Siswa struct {
+	ID             uint        `json:"id"`
 	Username       string      `json:"username" validate:"required" gorm:"not null"`
 	Password       string      `json:"password" validate:"required" gorm:"default:null"`
 	No_UTBK        *int        `json:"no_utbk" gorm:"default:null"`

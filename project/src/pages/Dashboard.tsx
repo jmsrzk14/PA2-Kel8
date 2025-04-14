@@ -7,6 +7,7 @@ import PtnContent from "./ptn";
 import CreateCourses from "./CreateCourses";
 import CreateUniversity from "./CreateUniversity";
 import CreateMajor from "./CreateMajor";
+import ScoreStudents from "./CreateScore";
 import UpdateCourses from "./EditCourses";
 import UpdateMajor from "./EditMajor";
 import UpdateUniversity from "./EditUniversity";
@@ -178,8 +179,9 @@ const Dashboard: React.FC = () => {
           <Route path="/courses/editPaket/:id" element={<UpdateCourses />} />
           <Route path="/courses/viewPaket/:id" element={<ViewCourses />} />
           <Route path="/students/list" element={<StudentsContent />} />
-          <Route path="/students/viewSiswa/:username" element={<ViewStudents />} />
+          <Route path="/students/viewSiswa/:username/:id" element={<ViewStudents />} />
           <Route path="/students/editSiswa/:username" element={<UpdateStudents />} />
+          <Route path="/score/tambahNilai/:username" element={<ScoreStudents />} />
           <Route path="/university/list" element={<PtnContent />} />
           <Route path="/university/tambahPtn" element={<CreateUniversity />} />
           <Route path="/university/editPtn/:id_ptn" element={<UpdateUniversity />} />

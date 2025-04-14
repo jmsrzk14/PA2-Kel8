@@ -13,6 +13,7 @@ const breadcrumbMap: { [key: string]: string } = {
   editPaket: "Update Paket",
   viewSiswa: "Detail Siswa",
   editSiswa: "Update Siswa",
+  tambahPtn: "Tambah PTN",
   viewPtn: "Detail PTN",
   editPtn: "Update PTN",
   tambahMajor: "Tambah Prodi",

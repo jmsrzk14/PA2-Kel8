@@ -8,6 +8,7 @@ import { Eye, Pencil, Trash } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 type Students = {
+  id: string;
   username: string;
   nisn: string;
   first_name: string;
@@ -175,7 +176,7 @@ const StudentsContent = () => {
                     </TableCell>
                   ))}
                   <TableCell align="center">
-                    <Link to={`/dashboard/students/viewSiswa/${row.username}`}>
+                    <Link to={`/dashboard/students/viewSiswa/${row.username}/${row.id}`}>
                       <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>
                     </Link>
                     <Link to={`/dashboard/students/editSiswa/${row.username}`}>

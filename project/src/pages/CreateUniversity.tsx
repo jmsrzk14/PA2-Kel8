@@ -2,25 +2,25 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const TambahPtn = () => {
-  const [namaPaket, setNamaPaket] = useState('');
-  const [total, setTotal] = useState(0);
-  const [active, setActive] = useState(0);
-  const [price, setPrice] = useState(0);
+  const [namaPtn, setNamaPtn] = useState('');
+  const [namaSingkat, setNamaSingkat] = useState('');
+  const [active, setActive] = useState('');
+  const [alamatWeb, setAlamatWeb] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const formData = new URLSearchParams();
-    formData.append("name", namaPaket);
-    formData.append("total", total.toString());
+    formData.append("namaPtn", namaPtn);
+    formData.append("namaSingkat", namaSingkat);
     formData.append("active", active.toString());
-    formData.append("price", price.toString());
+    formData.append("alamatWeb", alamatWeb);
 
     console.log("Payload yang dikirim:", formData.toString()); // 🔍 Debugging
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/courses/createPacket", {
+      const response = await fetch("http://127.0.0.1:8000/admin/createUniversity", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -32,7 +32,7 @@ const TambahPtn = () => {
       console.log("Response API:", result);
 
       if (response.ok) {
-        navigate("/dashboard/courses/list");
+        navigate("/dashboard/university/list");
       } else {
         alert("Gagal menambahkan paket");
       }
@@ -43,53 +43,50 @@ const TambahPtn = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Tambah Paket TryOut</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Tambah Perguruan Tinggi Negeri</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Nama Paket</label>
+          <label className="block text-sm font-medium text-gray-700">Nama Perguruan Tinggi Negeri</label>
           <input
             type="text"
             className="mt-1 p-2 border rounded w-full"
-            value={namaPaket}
-            onChange={(e) => setNamaPaket(e.target.value)}
+            value={namaPtn}
+            onChange={(e) => setNamaPtn(e.target.value)}
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Total</label>
+          <label className="block text-sm font-medium text-gray-700">Nama Singkat Perguruan Tinggi Negeri</label>
           <input
-            type="number"
+            type="text"
             className="mt-1 p-2 border rounded w-full"
-            value={total}
-            onChange={(e) => setTotal(Number(e.target.value))}
+            value={namaSingkat}
+            onChange={(e) => setNamaSingkat(e.target.value)}
             required
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Active</label>
           <input
-            type="number"
+            type="text"
             className="mt-1 p-2 border rounded w-full"
             value={active}
-            onChange={(e) => setActive(Number(e.target.value))}
+            onChange={(e) => {
+              const rawValue = e.target.value.replace(/\D/g, "");
+              setActive(rawValue);
+            }}
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Price</label>
-          <div className="mt-1 flex items-center border rounded w-full">
-            <span className="p-2">Rp.</span>
-            <input
-              type="number"
-              className="p-2 flex-1 outline-none"
-              value={price.toLocaleString("id-ID")}
-              onChange={(e) => {
-                const rawValue = e.target.value.replace(/\D/g, "");
-                setPrice(Number(rawValue));
-              }}
-              required
-            />
-          </div>
+          <label className="block text-sm font-medium text-gray-700">Alamat URL</label>
+          <input
+            type="text"
+            className="mt-1 p-2 border rounded w-full"
+            value={alamatWeb}
+            onChange={(e) => setAlamatWeb(e.target.value)}
+            required
+          />
         </div>
         <button
           type="submit"
