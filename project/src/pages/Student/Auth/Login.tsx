@@ -7,10 +7,10 @@ type LoginProps = {
   setIsAuthenticated: (value: boolean) => void;
 };
 
-const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
+const LoginStudent: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -18,8 +18,8 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/admin/login', {
-        email,
+      const response = await axios.post('http://127.0.0.1:8000/student/login', {
+        username,
         password
       },
       { withCredentials: true }
@@ -29,7 +29,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
 
       sessionStorage.setItem('token', token);
       setIsAuthenticated(true);
-      navigate('/dashboard/home');
+      navigate('/dashboard/student/home');
       console.log("Navigated to dashboard");
       console.log(token);
     } catch (err: any) {
@@ -68,11 +68,11 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
               </label>
               <div className="mt-1">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="text"
+                  name="username"
+                  type="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]"
                 />
@@ -132,10 +132,15 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
             </div>
           </form>
         </div>
+        <p className="mt-6 text-center text-md text-gray-600">
+          <Link to="/loginadmin" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Login sebagai Admin
+          </Link>
+        </p>
       </div>
     </div>
     </div>
   );
 };
 
-export default Login;
+export default LoginStudent;

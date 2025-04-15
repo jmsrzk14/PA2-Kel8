@@ -80,7 +80,8 @@ const MajorContent = () => {
           });
             if (!response.ok) throw new Error("Gagal menghapus Program Studi");             
             Swal.fire('Terhapus!', 'Data Program Studi berhasil dihapus.', 'success').then(() => {
-              window.location.reload();
+              setMajor(prev => prev.filter(p => p.id_prodi !== id));
+              setFilteredMajor(prev => prev.filter(p => p.id_prodi !== id));
             });
           } catch (error) {
             Swal.fire('Gagal!', (error as Error).message || 'Terjadi kesalahan saat menghapus.', 'error');

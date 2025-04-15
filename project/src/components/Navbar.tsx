@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('token'); 
-    navigate('/login');
+    navigate('/register');
   };
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
   return (
     <div className="h-[4.5em] shadow-sm flex items-center justify-between px-4" style={{ backgroundColor: "#A3D1C6" }}>
       <div className="flex items-center gap-2">
-        <h2 className="text-gray-700 text-lg font-semibold">Welcome, Admin</h2>
+        <h2 className="text-gray-700 text-lg font-semibold">Welcome, Santo</h2>
       </div>
       <div className="flex items-center gap-4" ref={menuRef}>
         <button className="p-2 rounded-full hover:bg-gray-100">
@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
         </button>
         <div className="relative inline-block">
           <button className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition" onClick={() => setMenuOpen(!menuOpen)}>
-            <User size={20} className="text-gray-700" />
+            <Bell size={20} className="text-gray-700" />
             <ChevronDown size={16} className="text-gray-700" />
           </button>
           {menuOpen && (

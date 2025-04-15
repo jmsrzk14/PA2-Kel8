@@ -28,7 +28,7 @@ func Register(ctx *fiber.Ctx) error {
 			"error": "Failed to hash password",
 		})
 	}
-	
+
 	admin := models.Users{
 		Nama:     data["name"],
 		Email:    data["email"],
@@ -109,12 +109,14 @@ func Login(ctx *fiber.Ctx) error {
 		})
 	}
 
+	prefixedToken := "admin-" + token
+
 	cookie := fiber.Cookie{
 		Name:     "jwtAdmin",
-		Value:    token,
+		Value:    prefixedToken,
 		Expires:  time.Now().Add(time.Minute * 30),
 		HTTPOnly: true,
-		Secure:   true,
+		Secure:   false,
 	}
 
 	ctx.Cookie(&cookie)
@@ -125,7 +127,7 @@ func Login(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(fiber.Map{
 		"message": "login success",
-		"token":   token,
+		"token":   prefixedToken,
 	})
 }
 

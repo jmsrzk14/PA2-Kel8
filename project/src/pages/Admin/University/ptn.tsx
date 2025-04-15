@@ -75,7 +75,8 @@ const PtnContent = () => {
         });
         if (!response.ok) throw new Error("Gagal menghapus universitas");
           Swal.fire('Terhapus!', 'Data universitas berhasil dihapus.', 'success').then(() => {
-            window.location.reload();
+            setUniversity(prev => prev.filter(p => p.id_ptn !== id));
+            setFilteredUniversity(prev => prev.filter(p => p.id_ptn !== id));
           });
         } catch (error) {
           Swal.fire('Gagal!', (error as Error).message || 'Terjadi kesalahan saat menghapus.', 'error');

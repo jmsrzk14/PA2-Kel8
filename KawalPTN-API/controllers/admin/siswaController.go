@@ -235,19 +235,19 @@ func UpdateStudent(ctx *fiber.Ctx) error {
 }
 
 func DeleteStudent(ctx *fiber.Ctx) error {
-	studentUsernameStr := ctx.Params("username")
+	studentId := ctx.Params("id")
 
 	var student models.T_Siswa
 
-	database.DB.Where("username = ?", studentUsernameStr).First(&student)
+	database.DB.Where("id = ?", studentId).First(&student)
 
-	if studentUsernameStr != student.Username {
+	if studentId != student.Username {
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "Student not found",
 		})
 	}
 
-	if err := database.DB.Where("username = ?", studentUsernameStr).Delete(&models.T_Siswa{}).Error; err != nil {
+	if err := database.DB.Where("id = ?", studentId).Delete(&models.T_Siswa{}).Error; err != nil {
 		fmt.Println("Delete Error:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Failed to Delete Table",

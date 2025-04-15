@@ -11,18 +11,17 @@ import (
 
 func CreateUniversity(ctx *fiber.Ctx) error {
 	fmt.Println("Received request:", ctx.FormValue("name"), ctx.FormValue("total"), ctx.FormValue("active"), ctx.FormValue("price"))
-	name := ctx.FormValue("name")
-	if name == "" {
+	namaPtn := ctx.FormValue("namaPtn")
+	if namaPtn == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "name is required",
+			"message": "namaPtn is required",
 		})
 	}
 
-	total := ctx.FormValue("total")
-	totalInt, err := strconv.Atoi(total)
-	if err != nil {
+	namaSingkat := ctx.FormValue("namaSingkat")
+	if namaSingkat == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "total must be a valid integer",
+			"message": "Nama Singkat must be a valid integer",
 		})
 	}
 
@@ -34,19 +33,18 @@ func CreateUniversity(ctx *fiber.Ctx) error {
 		})
 	}
 
-	price := ctx.FormValue("price")
-	priceInt, err := strconv.Atoi(price)
-	if err != nil {
+	alamatWeb := ctx.FormValue("alamatWeb")
+	if alamatWeb == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "price is required",
+			"message": "alamatWeb is required",
 		})
 	}
 
-	university := models.T_Paket{
-		Nama_Paket: name,
-		Total:      totalInt,
-		Active:     activeInt,
-		Price:      priceInt,
+	university := models.T_Ptn{
+		Nama_ptn:     namaPtn,
+		Nama_singkat: namaSingkat,
+		Active:       &activeInt,
+		Alamat_web:   alamatWeb,
 	}
 
 	fmt.Println("Saving to DB:", university)

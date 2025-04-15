@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('token'); 
-    navigate('/login');
+    navigate('/loginsiswa');
   };
 
   useEffect(() => {

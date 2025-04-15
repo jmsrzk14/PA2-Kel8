@@ -59,7 +59,7 @@ const StudentsContent = () => {
     setPage(0);
   }, [searchQuery, students]);
 
-  const handleDelete = async (username: string) => {
+  const handleDelete = async (id: number) => {
     Swal.fire({
       title: 'Apakah Anda yakin?',
       text: "Data siswa akan dihapus secara permanen!",
@@ -72,14 +72,15 @@ const StudentsContent = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await fetch(`http://127.0.0.1:8000/admin/listStudent/${username}`, {
+          const response = await fetch(`http://127.0.0.1:8000/admin/listStudent/${id}`, {
             method: "DELETE",
           });
 
           if (!response.ok) throw new Error("Gagal menghapus siswa");
 
           Swal.fire('Terhapus!', 'Data siswa berhasil dihapus.', 'success').then(() => {
-            window.location.reload();
+            setStudents(prev => prev.filter(p => p.id !== id));
+            setFilteredStudents(prev => prev.filter(p => p.id !== id));
           });
 
         } catch (error) {
@@ -168,7 +169,7 @@ const StudentsContent = () => {
               </TableRow>
             ) : (
               paginatedData.map((row, index) => (
-                <TableRow hover tabIndex={-1} key={row.username}>
+                <TableRow hover tabIndex={-1} key={row.id}>
                   <TableCell>{page * rowsPerPage + index + 1}</TableCell>
                   {columns.map((column) => (
                     <TableCell key={column.id} align="center">
@@ -176,13 +177,13 @@ const StudentsContent = () => {
                     </TableCell>
                   ))}
                   <TableCell align="center">
-                    <Link to={`/dashboard/students/viewSiswa/${row.username}/${row.id}`}>
+                    <Link to={`/dashboard/students/viewSiswa/${row.id}/${row.id}`}>
                       <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>
                     </Link>
-                    <Link to={`/dashboard/students/editSiswa/${row.username}`}>
+                    <Link to={`/dashboard/students/editSiswa/${row.id}`}>
                       <Button variant="contained" color="warning" size="small" sx={{ mr: 3, minWidth: 30 }}><Pencil size={20} /></Button>
                     </Link>
-                    <Button variant="contained" color="error" size="small" sx={{ mr: 1, minWidth: 30 }} onClick={() => handleDelete(row.username)}>
+                    <Button variant="contained" color="error" size="small" sx={{ mr: 1, minWidth: 30 }} onClick={() => handleDelete(row.id)}>
                       <Trash size={20} />
                     </Button>
                   </TableCell>

@@ -150,9 +150,7 @@ const Breadcrumbs: React.FC = () => {
             <React.Fragment key={name}>
               <ChevronRight size={16} className="mx-1 text-gray-400" />
               <span className="capitalize text-gray-600">
-                <Link to={routeTo} className="text-indigo-600 hover:text-indigo-800">
-                  {displayName}
-                </Link>
+                {displayName}
               </span>
             </React.Fragment>
           );

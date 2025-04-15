@@ -4,7 +4,7 @@ import (
 	controllers "KawalPTN-API/controllers/admin"
 	// "KawalPTN-API/middleware"
 
-	// cashierController "KawalPTN-API/controllers/cashier"
+	studentController "KawalPTN-API/controllers/student"
 
 	fiber "github.com/gofiber/fiber/v2"
 	// customerController "KawalPTN-API/controllers/customer"
@@ -42,6 +42,9 @@ func Setup(app *fiber.App) {
 	
 	admin.Post("/createScore", controllers.CreateScore)
 	admin.Get("/viewScore/:id_siswa", controllers.ShowScore)
+
+	student := app.Group("/student")
+	student.Post("/login", studentController.Login)
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)
 	// admin.Get("/cashier/index", controllers.IndexCashier)

@@ -73,6 +73,7 @@ const CoursesContent = () => {
         try {
           const response = await fetch(`http://127.0.0.1:8000/admin/listPacket/${id}`, {
             method: "DELETE",
+            credentials: "include",
           });
           if (!response.ok) {
             throw new Error("Gagal menghapus paket");
@@ -83,7 +84,8 @@ const CoursesContent = () => {
             icon: 'success',
             confirmButtonColor: '#3085d6',
           }).then(() => {
-            window.location.reload();
+            setPackages(prev => prev.filter(p => p.id !== id));
+            setFilteredPackages(prev => prev.filter(p => p.id !== id));
           });
         } catch (error) {
           Swal.fire({
