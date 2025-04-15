@@ -7,9 +7,9 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout= () => {
-    console.log("LogOut Clicked");
-    navigate("/loginsiswa");
+  const handleLogout = () => {
+    sessionStorage.removeItem('token'); 
+    navigate('/loginsiswa');
   };
   
   return (

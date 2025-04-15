@@ -13,7 +13,7 @@ import (
 	// "golang.org/x/crypto/bcrypt"
 )
 
-const AdminSecretKey = "admin_secret"
+const StudentSecretKey = "student_secret"
 
 // func Register(ctx *fiber.Ctx) error {
 // 	var data map[string]string
@@ -100,7 +100,7 @@ func Login(ctx *fiber.Ctx) error {
 		Subject:   "student",
 	})
 
-	token, err := claims.SignedString([]byte(AdminSecretKey))
+	token, err := claims.SignedString([]byte(StudentSecretKey))
 
 	if err != nil {
 		ctx.Status(fiber.StatusInternalServerError)
@@ -116,7 +116,7 @@ func Login(ctx *fiber.Ctx) error {
 		Value:    prefixedToken,
 		Expires:  time.Now().Add(time.Minute * 30),
 		HTTPOnly: true,
-		Secure:   false,
+		Secure:   true,
 	}
 
 	ctx.Cookie(&cookie)
@@ -153,17 +153,17 @@ func Login(ctx *fiber.Ctx) error {
 // 	return ctx.JSON(admin)
 // }
 
-// func Logout(c *fiber.Ctx) error {
-// 	cookie := new(fiber.Cookie)
-// 	cookie.Name = "Student"
-// 	cookie.Value = ""
-// 	cookie.Expires = time.Now().Add(-time.Minute)
-// 	cookie.HTTPOnly = true
-// 	cookie.Secure = true
+func Logout(c *fiber.Ctx) error {
+	cookie := new(fiber.Cookie)
+	cookie.Name = "Student"
+	cookie.Value = ""
+	cookie.Expires = time.Now().Add(-time.Minute)
+	cookie.HTTPOnly = true
+	cookie.Secure = true
 
-// 	c.Cookie(cookie)
+	c.Cookie(cookie)
 
-// 	return c.JSON(fiber.Map{
-// 		"message": "Successfully logged out",
-// 	})
-// }
+	return c.JSON(fiber.Map{
+		"message": "Successfully logged out",
+	})
+}

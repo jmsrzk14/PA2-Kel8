@@ -116,7 +116,7 @@ func Login(ctx *fiber.Ctx) error {
 		Value:    prefixedToken,
 		Expires:  time.Now().Add(time.Minute * 30),
 		HTTPOnly: true,
-		Secure:   false,
+		Secure:   true,
 	}
 
 	ctx.Cookie(&cookie)

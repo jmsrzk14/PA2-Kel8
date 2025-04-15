@@ -5,9 +5,10 @@ import { Eye, EyeOff } from 'lucide-react';
 
 type LoginProps = {
   setIsAuthenticated: (value: boolean) => void;
+  setUserRole: (role: string) => void;
 };
 
-const LoginStudent: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
+const LoginStudent: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
@@ -29,6 +30,7 @@ const LoginStudent: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
 
       sessionStorage.setItem('token', token);
       setIsAuthenticated(true);
+      setUserRole('student');
       navigate('/dashboard/student/home');
       console.log("Navigated to dashboard");
       console.log(token);
