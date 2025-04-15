@@ -122,9 +122,9 @@ const LihatSiswa = () => {
             </button>
           </Link>
           <Link to={`/dashboard/score/tambahNilai/${username}`} className="font-medium text-sm">
-            <button className="flex items-center bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-2 rounded-md transition-colors">
+            <button color="warning" className="flex items-center bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-md transition-colors">
               <ClipboardList size={20} className='mr-2' />
-              Input Nilai Siswa
+              Edit Nilai Siswa
             </button>
           </Link>
         </div>
@@ -172,7 +172,7 @@ const LihatSiswa = () => {
                 id="tahun"
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="p-2 border border-gray-300 rounded-md"
+                className="p-2 border rounded-md bg-gray-100"
               >
                 {Object.keys(scoresByYear).map((year) => (
                   <option key={year} value={year}>{year}</option>
