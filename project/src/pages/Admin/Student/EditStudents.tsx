@@ -42,49 +42,49 @@ const EditSiswa = () => {
     console.log("Payload yang dikirim:", formData.toString());
 
     Swal.fire({
-          title: 'Apakah Anda yakin?',
-          text: "Data siswa tidak akan dapat dikembalikan!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#33',
-          confirmButtonText: 'Ya, Edit!',
-          cancelButtonText: 'Batal'
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              const response = await fetch(`http://127.0.0.1:8000/admin/editStudent/${username}`, {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData.toString(),
-              });
+      title: 'Apakah Anda yakin?',
+      text: "Data siswa tidak akan dapat dikembalikan!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#33',
+      confirmButtonText: 'Ya, Edit!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`http://127.0.0.1:8000/admin/editStudent/${username}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: formData.toString(),
+          });
 
-              if (!response.ok) {
-                throw new Error("Gagal mengedit siswa");
-              }
-      
-              Swal.fire({
-                title: 'Berhasil!',
-                text: 'Data siswa berhasil diubah.',
-                icon: 'success',
-                confirmButtonColor: '#33',
-              }).then(() => {
-                navigate('/dashboard/students/list');
-              });
-      
-            } catch (error) {
-              Swal.fire({
-                title: 'Gagal!',
-                text: (error as Error).message || 'Terjadi kesalahan saat menghapus.',
-                icon: 'error',
-                confirmButtonColor: '#d3085d6',
-              });
-            }
+          if (!response.ok) {
+            throw new Error("Gagal mengedit siswa");
           }
-        });
-      };
+  
+          Swal.fire({
+            title: 'Berhasil!',
+            text: 'Data siswa berhasil diubah.',
+            icon: 'success',
+            confirmButtonColor: '#33',
+          }).then(() => {
+            navigate('/dashboard/students/list');
+          });
+  
+        } catch (error) {
+          Swal.fire({
+            title: 'Gagal!',
+            text: (error as Error).message || 'Terjadi kesalahan saat menghapus.',
+            icon: 'error',
+            confirmButtonColor: '#d3085d6',
+          });
+        }
+      }
+    });
+  };
 
   return (
     <div className="p-6">

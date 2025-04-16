@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components_user/Sidebar";
-import Navbar from "../components_user/Navbar";
-import Breadcrumbs from "../components_user/Breadcrumbs";
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
+import Breadcrumbs from "./components/Breadcrumbs";
 import { Route, Routes } from "react-router-dom";
 import Tryout from "./Tryout";
 import DetailTryout from "./DetailTryout";
@@ -48,7 +48,7 @@ const HomeUser: React.FC = () => {
                 <Breadcrumbs />
                 <Routes>
                     <Route path="/home" element={<UserContent />} />
-                    <Route path="/paket" element={<Paket />} />
+                    <Route path="/tryout" element={<Paket />} />
                     <Route path="/tryout" element={<Tryout />} />
                     <Route path="/hasiltryout" element={<HasilTryout />} />
                     <Route path="/profil" element={<Profil />} />

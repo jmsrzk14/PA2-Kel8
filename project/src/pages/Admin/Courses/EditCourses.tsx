@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const EditPaket = () => {
   const { id } = useParams(); 
@@ -40,26 +41,49 @@ const EditPaket = () => {
 
     console.log("Payload yang dikirim:", formData.toString());
 
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/admin/editPacket/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-      });
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Data Paket Tryout tidak akan dapat dikembalikan!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#33',
+      confirmButtonText: 'Ya, Edit!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`http://127.0.0.1:8000/admin/editPacket/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: formData.toString(),
+          });
 
-      const result = await response.json();
-      console.log("Response API:", result);
-
-      if (response.ok) {
-        navigate("/dashboard/courses/list");
-      } else {
-        alert("Gagal mengupdate paket");
+          if (!response.ok) {
+            throw new Error("Gagal mengedit Paket Tryout");
+          }
+  
+          Swal.fire({
+            title: 'Berhasil!',
+            text: 'Data Paket Tryout berhasil diubah.',
+            icon: 'success',
+            confirmButtonColor: '#33',
+          }).then(() => {
+            navigate('/dashboard/courses/list');
+          });
+  
+        } catch (error) {
+          Swal.fire({
+            title: 'Gagal!',
+            text: (error as Error).message || 'Terjadi kesalahan saat menghapus.',
+            icon: 'error',
+            confirmButtonColor: '#d3085d6',
+          });
+        }
       }
-    } catch (error) {
-      console.error("Error saat mengupdate paket", error);
-    }
+    });
   };
 
   return (

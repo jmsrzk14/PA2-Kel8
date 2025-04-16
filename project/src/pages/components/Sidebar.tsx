@@ -9,7 +9,8 @@ import {
   Megaphone,
   MenuIcon,
   ChevronDown, 
-  ChevronLeft
+  ChevronLeft,
+  Banknote, 
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -46,6 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     { icon: Users, label: 'Siswa', path: '/dashboard/students/list' },
     { icon: School, label: 'Perguruan Tinggi', path: '/dashboard/university/list' },
     { icon: Book, label: 'Program Studi', path: '/dashboard/major/list' },
+    { icon: Banknote, label: 'Pembayaran', path: '/dashboard/payment/list' },
     { icon: Megaphone, label: 'Pengumuman', path: '/dashboard/settings' },
   ];
 

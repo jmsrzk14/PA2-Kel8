@@ -32,13 +32,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   }, []);
 
   const menuItems = [
-    { icon: Home, label: 'Home', path: '/homeuser/home' },
+    { icon: Home, label: 'Home', path: '/dashboard/student/home' },
     {
       icon: GraduationCap,
       label: 'Tryout',
       path: '#',
       children: [
-        { label: 'Tryout Saya', path: '/homeuser/tryout' },
+        { label: 'Tryout Saya', path: '/dashboard/student/tryout' },
         { label: 'Hasil Tryout', path: '/homeuser/hasiltryout' },
       ]
     },

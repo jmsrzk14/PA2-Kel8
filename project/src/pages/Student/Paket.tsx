@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Star, Clock, Users, BookOpen, X } from 'lucide-react';
-import Modal from "react-modal";
+import Modal from 'react-modal';
 import axios from 'axios';
 
 Modal.setAppElement('#root');
@@ -43,6 +43,7 @@ const TryoutPackageCard = ({
             });
 
             const token = response.data.token;
+            console.log(token);
 
             window.snap.pay(token, {
                 onSuccess: () => {

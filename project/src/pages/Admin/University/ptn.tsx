@@ -60,7 +60,7 @@ const PtnContent = () => {
   const handleDelete = async (id: number) => {
     Swal.fire({
       title: 'Apakah Anda yakin?',
-      text: "Data universitas akan dihapus secara permanen!",
+      text: "Data Perguruan Tinggi Negeri akan dihapus secara permanen!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -74,7 +74,7 @@ const PtnContent = () => {
           method: "DELETE",
         });
         if (!response.ok) throw new Error("Gagal menghapus universitas");
-          Swal.fire('Terhapus!', 'Data universitas berhasil dihapus.', 'success').then(() => {
+          Swal.fire('Terhapus!', 'Data Perguruan Tinggi Negeri berhasil dihapus.', 'success').then(() => {
             setUniversity(prev => prev.filter(p => p.id_ptn !== id));
             setFilteredUniversity(prev => prev.filter(p => p.id_ptn !== id));
           });

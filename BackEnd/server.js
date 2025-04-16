@@ -5,7 +5,11 @@ const cors = require('cors');
 const midtransClient = require('midtrans-client');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 let snap = new midtransClient.Snap({

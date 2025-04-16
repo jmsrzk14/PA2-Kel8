@@ -16,7 +16,7 @@ type T_Siswa struct {
 	Last_Name      *string     `json:"last_name" gorm:"default:null"`
 	Sekolah        string      `json:"sekolah"`
 	Asal_Sekolah   string      `json:"asal_sekolah" gorm:"type:char(100)"`
-	Sekolah_Sma    Sekolah_Sma `gorm:"foreignKey:Asal_Sekolah" json:"sekolah_sma"`
+	Sekolah_Sma    Sekolah_Sma `gorm:"foreignKey:Asal_Sekolah;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"sekolah_sma"`
 	Kelompok_Ujian string      `json:"kelompok_ujian" gorm:"type:enum('SAINTEK', 'SOSHUM', 'CAMPURAN');not null" validate:"required,oneof=SAINTEK SOSHUM CAMPURAN"`
 	Kelas          *string     `json:"kelas" gorm:"default:null"`
 	Grade          *string     `json:"grade" gorm:"type:enum('A', 'B', 'C', 'LULUS', 'SUPERINTENSIF', 'TIDAK TES');default:'TIDAK TES'" validate:"required,oneof=A B C LULUS SUPERINTENSIF TIDAK TES"`
@@ -38,10 +38,10 @@ type T_Siswa struct {
 	Pilihan1_UTBK_Aktual *string `json:"pilihan1_utbk_aktual" gorm:"default:null;type:char(100)"`
 	Pilihan2_UTBK_Aktual *string `json:"pilihan2_utbk_aktual" gorm:"default:null;type:char(100)"`
 
-	Prodi1       T_Prodi `gorm:"foreignKey:Pilihan1_UTBK" json:"prodi1"`
-	Prodi2       T_Prodi `gorm:"foreignKey:Pilihan2_UTBK" json:"prodi2"`
-	Prodi1Aktual T_Prodi `gorm:"foreignKey:Pilihan1_UTBK_Aktual" json:"prodi1_aktual"`
-	Prodi2Aktual T_Prodi `gorm:"foreignKey:Pilihan2_UTBK_Aktual" json:"prodi2_aktual"`
+	Prodi1       T_Prodi `gorm:"foreignKey:Pilihan1_UTBK;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"prodi1"`
+	Prodi2       T_Prodi `gorm:"foreignKey:Pilihan2_UTBK;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"prodi2"`
+	Prodi1Aktual T_Prodi `gorm:"foreignKey:Pilihan1_UTBK_Aktual;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"prodi1_aktual"`
+	Prodi2Aktual T_Prodi `gorm:"foreignKey:Pilihan2_UTBK_Aktual;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"prodi2_aktual"`
 }
 
 func (t_siswa *T_Siswa) ValidateTSiswa() error {

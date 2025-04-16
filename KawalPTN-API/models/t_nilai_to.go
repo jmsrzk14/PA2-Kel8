@@ -9,9 +9,9 @@ import (
 type T_Nilai struct {
 	ID        uint      `json:"id"`
 	Id_Siswa  uint      `json:"id_siswa" gorm:"not null"`
-	T_Siswa   T_Siswa   `gorm:"foreignKey:Id_Siswa" json:"t_siswa"`
+	T_Siswa   T_Siswa   `gorm:"foreignKey:Id_Siswa;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"t_siswa"`
 	Id_Paket  uint      `json:"id_paket" gorm:"not null"`
-	T_Paket   T_Paket   `gorm:"foreignKey:Id_Paket" json:"t_paket"`
+	T_Paket   T_Paket   `gorm:"foreignKey:Id_Paket;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"t_paket"`
 	Total     int       `json:"total" gorm:"not null"`
 	Year      int       `json:"year" gorm:"not null"`
 	Pu        int       `json:"pu" gorm:"not null"`

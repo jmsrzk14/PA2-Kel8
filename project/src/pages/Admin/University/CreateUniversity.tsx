@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const TambahPtn = () => {
   const [namaPtn, setNamaPtn] = useState('');
@@ -17,7 +18,7 @@ const TambahPtn = () => {
     formData.append("active", active.toString());
     formData.append("alamatWeb", alamatWeb);
 
-    console.log("Payload yang dikirim:", formData.toString()); // 🔍 Debugging
+    console.log("Payload yang dikirim:", formData.toString());
 
     try {
       const response = await fetch("http://127.0.0.1:8000/admin/createUniversity", {
@@ -28,17 +29,22 @@ const TambahPtn = () => {
         body: formData.toString(),
       });
 
-      const result = await response.json();
-      console.log("Response API:", result);
-
-      if (response.ok) {
-        navigate("/dashboard/university/list");
-      } else {
-        alert("Gagal menambahkan paket");
-      }
+      Swal.fire({
+        title: 'Berhasil!',
+        text: 'Data Perguruan Tinggi Negeri berhasil ditambahkan.',
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+      }).then(() => {
+        navigate("/dashboard/university/list")
+      });
     } catch (error) {
-      console.error("Error saat menambahkan paket", error);
-    }
+      Swal.fire({
+        title: 'Gagal!',
+        text: (error as Error).message || 'Terjadi kesalahan saat menambahkan.',
+        icon: 'error',
+        confirmButtonColor: '#d33',
+      });
+    };
   };
 
   return (

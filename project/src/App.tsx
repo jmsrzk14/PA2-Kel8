@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Dashboard from './pages/Admin/Dashboard';
-import StudentDashboard from './pages/Student/Dashboard';
+import UserContent from './pages/Student/HomeUser';
 import LoginAdmin from './pages/Auth/Login';
 import LoginSiswa from './pages/Student/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -50,7 +50,7 @@ function AppRoutes() {
         path="/dashboard/student/*"
         element={
           isAuthenticated && userRole === 'student' ? (
-            <StudentDashboard />
+            <UserContent />
           ) : (
             <Navigate to="/loginsiswa" replace />
           )

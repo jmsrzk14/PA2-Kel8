@@ -16,7 +16,7 @@ const LihatProdi = () => {
       setLoading(true);
       setError('');
       try {
-        const response = await fetch(`http://127.0.0.1:8000/major/view/${id_prodi}`);
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewMajor/${id_prodi}`);
         if (!response.ok) throw new Error('Gagal mengambil data paket');
         const data = await response.json();
         console.log("Data dari API:", data);
@@ -47,7 +47,7 @@ const LihatProdi = () => {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Detail Data Prodi</h1>
       <div className="bg-gray-100 p-4 rounded-md space-y-4">
         <p><strong>Nama Prodi:</strong> {namaProdi}</p>
-        <p><strong>Nama PTN:</strong> {namaProdiPtn}</p>
+        <p><strong>Nama Prodi PTN:</strong> {namaProdiPtn}</p>
         <p><strong>Active:</strong> {active}</p>
         <p><strong>Jenis:</strong> {jenis}</p>
         <p><strong>Jenjang:</strong> {jenjang}</p>
