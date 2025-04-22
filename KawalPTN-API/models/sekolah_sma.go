@@ -9,11 +9,8 @@ import (
 type Sekolah_Sma struct {
 	ID              string    `json:"id" gorm:"type:char(100);primaryKey"`
 	Npsn            int       `json:"npsn" gorm:"not null;default: 0"`
-	Kode_prop       int       `json:"kode_prop" gorm:"not null;default: 0"`
 	Propinsi        string    `json:"propinsi" gorm:"not null"`
-	Kode_kab_kota   int       `json:"kode_kab_kota" gorm:"not null;default: 0"`
 	Kabupaten_kota  string    `json:"kabupaten_kota" gorm:"not null"`
-	Kode_kec        int       `json:"kode_kec" gorm:"not null;default: 0"`
 	Kecamatan       string    `json:"kecamatan" gorm:"not null"`
 	Bentuk          string    `json:"bentuk" gorm:"not null"`
 	Sekolah         string    `json:"sekolah" gorm:"not null"`

@@ -25,6 +25,10 @@ export function Profil() {
     const [pilihan1UtbkAktual, setPilihan1UtbkAktual] = useState('');
     const [pilihan2UtbkAktual, setPilihan2UtbkAktual] = useState('');
     const [asalSekolahNama, setAsalSekolahNama] = useState('');
+    const [namapilihan1Utbk, setNamaPilihan1Utbk] = useState('');
+    const [namapilihan2Utbk, setNamaPilihan2Utbk] = useState('');
+    const [namapilihan1UtbkAktual, setNamaPilihan1UtbkAktual] = useState('');
+    const [namapilihan2UtbkAktual, setNamaPilihan2UtbkAktual] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -50,6 +54,18 @@ export function Profil() {
             setPilihan2Utbk(data.pilihan2_utbk);
             setPilihan1UtbkAktual(data.pilihan1_utbk_aktual);
             setPilihan2UtbkAktual(data.pilihan2_utbk_aktual);
+            
+
+            const sekolahRes = await axios.get(`http://localhost:8000/admin/viewSekolah/${data.asal_sekolah}`);
+            setAsalSekolahNama(sekolahRes.data.sekolah);
+            const prodi1Res = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan1_utbk}`);
+            setNamaPilihan1Utbk(prodi1Res.data.nama_prodi_ptn);
+            const prodi2Res = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan2_utbk}`);
+            setNamaPilihan2Utbk(prodi2Res.data.nama_prodi_ptn);
+            const prodi1AktualRes = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan1_utbk_aktual}`);
+            setNamaPilihan1UtbkAktual(prodi1AktualRes.data.nama_prodi_ptn);
+            const prodi2AktualRes = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan2_utbk_aktual}`);
+            setNamaPilihan2UtbkAktual(prodi2AktualRes.data.nama_prodi_ptn);
           } catch (error) {
             console.error("Error fetching data:", error);
             setError('Gagal memuat data. Silakan coba lagi.');
@@ -160,7 +176,7 @@ export function Profil() {
                         <div className="flex"><span className="w-1/4 font-semibold">Nama</span><span className="w-3/4">: {nama}</span></div>
                         <div className="flex"><span className="w-1/4 font-semibold">Username</span><span className="w-3/4">: {username}</span></div>
                         <div className="flex"><span className="w-1/4 font-semibold">NISN</span><span className="w-3/4">: {nisn}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Asal Sekolah</span><span className="w-3/4">: {asalSekolah}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Asal Sekolah</span><span className="w-3/4">: {asalSekolahNama}</span></div>
                         <div className="flex"><span className="w-1/4 font-semibold">Kelompok Ujian</span><span className="w-3/4">: {kelompokUjian}</span></div>
                         <div className="flex"><span className="w-1/4 font-semibold">Telepon</span><span className="w-3/4">: {telp}</span></div>
                     </div>
@@ -170,10 +186,10 @@ export function Profil() {
                         PILIHAN KAMPUS DAN JURUSAN
                     </div>
                     <div className="p-4 space-y-2 w-100">
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK</span><span className="w-1/4">: {pilihan1Utbk}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK</span><span className="w-1/4">: {pilihan2Utbk}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK Aktual</span><span className="w-1/4">: {pilihan1UtbkAktual}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-1/4">: {pilihan2UtbkAktual}</span></div>                          
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK</span><span className="w-4/4">: {namapilihan1Utbk}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK</span><span className="w-4/4">: {namapilihan2Utbk}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK Aktual</span><span className="w-4/4">: {namapilihan1UtbkAktual}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-4/4">: {namapilihan2UtbkAktual}</span></div>                          
                             
                     </div>
                     <div className="flex justify-end space-x-3 p-4">

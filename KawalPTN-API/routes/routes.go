@@ -51,6 +51,12 @@ func Setup(app *fiber.App) {
 	admin.Put("/editAnnouncement/:id", controllers.UpdateAnnouncement)
 	admin.Delete("/listAnnouncement/:id", controllers.DeleteAnnouncement)
 
+	admin.Post("/createSekolah", controllers.CreateSekolah)
+	admin.Get("/listSekolah", controllers.IndexSekolah)
+	admin.Get("/viewSekolah/:id", controllers.ShowSekolah)
+	admin.Put("/editSekolah/:id", controllers.UpdateSekolah)
+	admin.Delete("/listSekolah/:id", controllers.DeleteSekolah)
+
 	student := app.Group("/student")
 	student.Post("/login", studentController.Login)
 	student.Get("/profile", studentController.Profile)
