@@ -15,6 +15,8 @@ func Setup(app *fiber.App) {
 
 	admin.Post("/login", controllers.Login)
 	admin.Post("/register", controllers.Register)
+	admin.Get("/profile", controllers.Profile)
+	admin.Get("/listUser/:id_users", controllers.IndexUsers)
 	admin.Post("/logout", controllers.Logout)
 
 	admin.Post("/createPacket", controllers.CreatePacket)
@@ -42,6 +44,12 @@ func Setup(app *fiber.App) {
 	
 	admin.Post("/createScore", controllers.CreateScore)
 	admin.Get("/viewScore/:id_siswa", controllers.ShowScore)
+
+	admin.Post("/createAnnouncement", controllers.CreateAnnouncement)
+	admin.Get("/listAnnouncement", controllers.IndexAnnouncement)
+	admin.Get("/viewAnnouncement/:id", controllers.ShowAnnouncement)
+	admin.Put("/editAnnouncement/:id", controllers.UpdateAnnouncement)
+	admin.Delete("/listAnnouncement/:id", controllers.DeleteAnnouncement)
 
 	student := app.Group("/student")
 	student.Post("/login", studentController.Login)

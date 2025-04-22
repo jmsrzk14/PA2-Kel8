@@ -4,14 +4,18 @@ import StudentsContent from "./Student/students";
 import CoursesContent from "./Courses/courses";
 import MajorContent from "./Major/major";
 import PtnContent from "./University/ptn";
+import AnnouncementContent from "./Announcement/announcement";
+import CreateAnnouncement from "./Announcement/CreateAnnouncement";
 import CreateCourses from "./Courses/CreateCourses";
 import CreateUniversity from "./University/CreateUniversity";
 import CreateMajor from "./Major/CreateMajor";
 import ScoreStudents from "./Student/CreateScore";
+import UpdateAnnouncement from "./Announcement/editAnnouncement";
 import UpdateCourses from "./Courses/EditCourses";
 import UpdateMajor from "./Major/EditMajor";
 import UpdateUniversity from "./University/EditUniversity";
 import UpdateStudents from "./Student/EditStudents";
+import ViewAnnouncement from "./Announcement/viewAnnouncement"
 import ViewCourses from "./Courses/ViewCourses";
 import ViewMajor from "./Major/ViewMajor";
 import ViewStudents from "./Student/ViewStudents";
@@ -19,8 +23,20 @@ import ViewUniversity from "./University/ViewUniversity";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Breadcrumbs from "../components/Breadcrumbs";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+} from 'recharts';
 
-const DashboardContent = () => {
+interface Student {
+  active: string;
+}
+
+interface ChartData {
+  year: string;
+  jumlah: number;
+}
+
+const DashboardContent: React.FC = () => {
   const [time, setTime] = useState(new Date());
   const [totalPackets, setTotalPackets] = useState(0);
   const [totalStudents, setTotalStudents] = useState(0);
@@ -28,6 +44,8 @@ const DashboardContent = () => {
   const [totalMajor, setTotalMajor] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [studentData, setStudentData] = useState<Student[]>([]);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -37,70 +55,68 @@ const DashboardContent = () => {
   }, []);
 
   useEffect(() => {
-    const fetchPackets = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await fetch("http://127.0.0.1:8000/admin/listPacket");
-        if (!response.ok) throw new Error("Gagal mengambil data students");
-        const data = await response.json();
-        setTotalPackets(data.length);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-        setError("");
-      } finally {
-        setLoading(false);
-      }
-    };
     const fetchStudents = async () => {
       setLoading(true);
       setError("");
       try {
         const response = await fetch("http://127.0.0.1:8000/admin/listStudent");
         if (!response.ok) throw new Error("Gagal mengambil data students");
-        const data = await response.json();
+        const data: Student[] = await response.json();
+        setStudentData(data);
+        console.log("Raw active data:", data.map(student => student.active));
         setTotalStudents(data.length);
+
+        const grouped: Record<string, number> = data.reduce<Record<string, number>>((acc, student) => {
+          const year = student.active;
+          if (year) {
+            acc[year] = (acc[year] || 0) + 1;
+          }
+          return acc;
+        }, {});
+
+        const formattedChartData: ChartData[] = Object.entries(grouped)
+          .map(([year, jumlah]) => ({
+            year,
+            jumlah: Number(jumlah),
+          }))
+          .sort((a, b) => a.year.localeCompare(b.year));
+
+        console.log("chartData:", formattedChartData);
+        setChartData(formattedChartData);
       } catch (error) {
         console.error("Error fetching students:", error);
-        setError("");
+        setError("Terjadi kesalahan saat mengambil data siswa.");
       } finally {
         setLoading(false);
       }
     };
-    const fetchUniversity = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await fetch("http://127.0.0.1:8000/admin/listUniversity");
-        if (!response.ok) throw new Error("Gagal mengambil data students");
-        const data = await response.json();
-        setTotalUniversity(data.length);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-        setError("");
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchMajor = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await fetch("http://127.0.0.1:8000/admin/listMajor");
-        if (!response.ok) throw new Error("Gagal mengambil data students");
-        const data = await response.json();
-        setTotalMajor(data.length);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-        setError("");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPackets();
     fetchStudents();
-    fetchUniversity();
-    fetchMajor();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const endpoints = [
+        { url: "http://127.0.0.1:8000/admin/listPacket", setter: setTotalPackets },
+        { url: "http://127.0.0.1:8000/admin/listStudent", setter: setTotalStudents },
+        { url: "http://127.0.0.1:8000/admin/listUniversity", setter: setTotalUniversity },
+        { url: "http://127.0.0.1:8000/admin/listMajor", setter: setTotalMajor },
+      ];
+
+      for (const { url, setter } of endpoints) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("Gagal mengambil data");
+          const data = await response.json();
+          setter(data.length);
+        } catch (error) {
+          console.error("Error:", error);
+          setError("Terjadi kesalahan saat mengambil data.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchData();
   }, []);
 
   const formattedDate = time.toLocaleDateString("en-GB", {
@@ -117,47 +133,54 @@ const DashboardContent = () => {
       <h1 className="mt-[-1em] text-2xl mb-6 sm:text-lg">{`${formattedDate} ${formattedTime}`}</h1>
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Dashboard cards */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-md font-semibold text-gray-700 mb-2">Paket TryOut</h3>
-          {loading ? (
-            <p className="text-lg text-gray-500">Loading...</p>
-          ) : error ? (
-            <p className="text-lg text-red-500">{error}</p>
-          ) : (
-            <p className="text-3xl font-bold text-indigo-600">{totalPackets.toLocaleString()}</p>
-          )}
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-md font-semibold text-gray-700 mb-2">Jumlah Siswa</h3>
-          {loading ? (
-            <p className="text-lg text-gray-500">Loading...</p>
-          ) : error ? (
-            <p className="text-lg text-red-500">{error}</p>
-          ) : (
-            <p className="text-3xl font-bold text-indigo-600">{totalStudents.toLocaleString()}</p>
-          )}
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-md font-semibold text-gray-700 mb-2">Perguruan Tinggi Negeri</h3>
-          {loading ? (
-            <p className="text-lg text-gray-500">Loading...</p>
-          ) : error ? (
-            <p className="text-lg text-red-500">{error}</p>
-          ) : (
-            <p className="text-3xl font-bold text-indigo-600">{totalUniversity.toLocaleString()}</p>
-          )}
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-md font-semibold text-gray-700 mb-2">Program Studi</h3>
-          {loading ? (
-            <p className="text-lg text-gray-500">Loading...</p>
-          ) : error ? (
-            <p className="text-lg text-red-500">{error}</p>
-          ) : (
-            <p className="text-3xl font-bold text-indigo-600">{totalMajor.toLocaleString()}</p>
-          )}
-        </div>
+        {[{
+          title: "Paket TryOut",
+          value: totalPackets,
+        }, {
+          title: "Jumlah Siswa",
+          value: totalStudents,
+        }, {
+          title: "Perguruan Tinggi Negeri",
+          value: totalUniversity,
+        }, {
+          title: "Program Studi",
+          value: totalMajor,
+        }].map(({ title, value }) => (
+          <div key={title} className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-md font-semibold text-gray-700 mb-2">{title}</h3>
+            {loading ? (
+              <p className="text-lg text-gray-500">Loading...</p>
+            ) : error ? (
+              <p className="text-lg text-red-500">{error}</p>
+            ) : (
+              <p className="text-3xl font-bold text-indigo-600">{value.toLocaleString()}</p>
+            )}
+          </div>
+        ))}
+      </div>
+      <h2 className="text-xl font-semibold mt-10 mb-4 text-gray-800">Jumlah Siswa per Tahun</h2>
+      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="mt-4 text-gray-700">
+        <h3 className="font-medium mb-2">Tahun Penerimaan yang Terdeteksi:</h3>
+        <ul className="list-disc list-inside">
+          {chartData.map((item) => (
+            <li key={item.year}>{item.year}</li>
+          ))}
+        </ul>
+      </div>
+        {loading ? (
+          <p className="text-gray-500">Loading chart...</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="2 3" />
+              <XAxis dataKey="year" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="jumlah" fill="#6366F1" />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
@@ -190,7 +213,10 @@ const Dashboard: React.FC = () => {
           <Route path="/major/tambahMajor" element={<CreateMajor />} />
           <Route path="/major/editMajor/:id_prodi" element={<UpdateMajor />} />
           <Route path="/major/viewMajor/:id_prodi" element={<ViewMajor />} />
-          <Route path="/settings" element={<div className="p-6">Settings Content</div>} />
+          <Route path="/announcement/list" element={<AnnouncementContent />} />
+          <Route path="/announcement/createAnnouncement" element={<CreateAnnouncement />} />
+          <Route path="/announcement/viewAnnouncement/:id" element={<ViewAnnouncement />} />
+          <Route path="/announcement/editAnnouncement/:id" element={<UpdateAnnouncement />} />
         </Routes>
       </div>
     </div>

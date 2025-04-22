@@ -25,11 +25,16 @@ const LihatSiswa = () => {
   const [lbe, setLbe] = useState('');
   const [pm, setPm] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
-  const [scoresByYear, setScoresByYear] = useState<Record<string, ScorePerYear>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [coursesList, setCoursesList] = useState([]);
+  const [selectedCourses, setSelectedCourses] = useState('');
+  const [scoresByYear, setScoresByYear] = useState<ScorePerYear>({});
+  const [loadingStudent, setLoadingStudent] = useState(true);
+  const [loadingScore, setLoadingScore] = useState(true);
+  const [errorStudent, setErrorStudent] = useState('');
+  const [errorScore, setErrorScore] = useState('');
 
-  type ScorePerYear = {
+
+  type Score = {
     pu: number;
     ppu: number;
     pbm: number;
@@ -37,13 +42,26 @@ const LihatSiswa = () => {
     lbi: number;
     lbe: number;
     pm: number;
-    total: number;
-  };  
+    total?: number;
+  };
+
+  type ScorePerYear = Record<string, Record<string, Score>>;
 
   useEffect(() => {
-    const fetchPaket = async () => {
-      setLoading(true);
-      setError('');
+    const fetchCoursesList = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/admin/listPacket");
+        const data = await response.json();
+        console.log("Data dari API:", data);
+        setCoursesList(data);
+      } catch (error) {
+        console.error("Gagal mengambil data PTN", error);
+      }
+    };
+
+    const fetchStudent = async () => {
+      setLoadingStudent(true);
+      setErrorStudent('');
       console.log("ID Siswa dari params:", id);
       try {
         const response = await fetch(`http://127.0.0.1:8000/admin/viewStudent/${username}`);
@@ -65,50 +83,68 @@ const LihatSiswa = () => {
         setPilihan2UtbkAktual(data.nama_prodi2_aktual);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError('Gagal memuat data. Silakan coba lagi.');
+        setErrorStudent('Gagal memuat data. Silakan coba lagi.');
       } finally {
-        setLoading(false);
+        setLoadingStudent(false);
       }
     };
 
     const fetchScore = async () => {
-      setLoading(true);
-      setError('');
+      setLoadingScore(true);
+      setErrorScore('');
       try {
         const response = await fetch(`http://127.0.0.1:8000/admin/viewScore/${id}`);
         if (!response.ok) throw new Error('Gagal mengambil data nilai');
         const data = await response.json();
         console.log("Data dari API:", data);
+        console.log("Response nilai mentah:", data);
 
-        setScoresByYear(data);
+        const transformedScores: Record<string, Record<string, ScorePerYear>> = {};
+
+        Object.entries(data).forEach(([key, value]) => {
+          const numericKey = parseInt(key);
+          if (!isNaN(numericKey)) {
+            if (numericKey > 2000) {
+              // berarti ini tahun
+              transformedScores[numericKey] = {
+                default: value as ScorePerYear
+              };
+            } else {
+              // kemungkinan paket ID tanpa tahun — bisa kamu sesuaikan sesuai logika backend
+              if (!transformedScores['unknown']) transformedScores['unknown'] = {};
+              transformedScores['unknown'][numericKey] = value as ScorePerYear;
+            }
+          }
+        });
+
+        setScoresByYear(transformedScores);
+
         const years = Object.keys(data);
-        if (years.length > 0) setSelectedYear(years[0]);
-
-        setPu(data.pu);
-        setPpu(data.ppu);
-        setPbm(data.pbm);
-        setPk(data.pk);
-        setLbe(data.lbe);
-        setLbi(data.lbi);
-        setPm(data.pm);
+        if (years.length > 0) {
+          setSelectedYear(years[0]);
+          const paketList = Object.keys(data[years[0]]);
+          if (paketList.length > 0) {
+            setSelectedCourses(paketList[0]);
+          }
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
-        setError('Gagal memuat data. Silakan coba lagi.');
       } finally {
-        setLoading(false);
       }
     };
 
+    if(id){
+      fetchCoursesList();
+    }
     if (username) {
-      fetchPaket();
+      fetchStudent();
     }
     if (id) {
       fetchScore();
     }
   }, [username, id]);
 
-  if (loading) return <div className="p-6 text-center">Memuat data...</div>;
-  if (error) return <div className="p-6 text-red-500 text-center">{error}</div>;
+  if (loadingStudent) return <div className="p-6 text-center">Memuat data...</div>;
+  if (errorStudent) return <div className="p-6 text-red-500 text-center">{errorStudent}</div>;
 
   return (
     <div className="p-6">
@@ -179,16 +215,33 @@ const LihatSiswa = () => {
                 ))}
               </select>
             </div>
-            {selectedYear && scoresByYear[selectedYear] && (
+            <div className="mb-4 flex items-center">
+              <label htmlFor="paket" className="block mb-1 mr-4 font-semibold">Paket:</label>
+              <select
+                id="paket"
+                value={selectedCourses}
+                onChange={(e) => setSelectedCourses(e.target.value)}
+                className="p-2 border rounded-md bg-gray-100"
+              >
+                {coursesList.map((courses) => (
+                  <option key={courses.id} value={courses.id}>
+                    {courses.nama_paket}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {selectedYear && selectedCourses && scoresByYear[selectedYear]?.[selectedCourses] ? (
               <>
-                <p><strong>Penalaran Umum:</strong> {scoresByYear[selectedYear].pu || "-"}</p>
-                <p><strong>Pengetahuan dan Pemahaman Umum:</strong> {scoresByYear[selectedYear].ppu || "-"}</p>
-                <p><strong>Pemahaman Bacaan dan Menulis:</strong> {scoresByYear[selectedYear].pbm || "-"}</p>
-                <p><strong>Pengetahun Kuantitatif:</strong> {scoresByYear[selectedYear].pk || "-"}</p>
-                <p><strong>Literasi Bahasa Indonesia:</strong> {scoresByYear[selectedYear].lbi || "-"}</p>
-                <p><strong>Literasi Bahasa Inggris:</strong> {scoresByYear[selectedYear].lbe || "-"}</p>
-                <p><strong>Penalaran Matematika:</strong> {scoresByYear[selectedYear].pm || "-"}</p>
+                <p><strong>Penalaran Umum:</strong> {scoresByYear[selectedYear][selectedCourses].pu || "-"}</p>
+                <p><strong>Pengetahuan dan Pemahaman Umum:</strong> {scoresByYear[selectedYear][selectedCourses].ppu || "-"}</p>
+                <p><strong>Pemahaman Bacaan dan Menulis:</strong> {scoresByYear[selectedYear][selectedCourses].pbm || "-"}</p>
+                <p><strong>Pengetahun Kuantitatif:</strong> {scoresByYear[selectedYear][selectedCourses].pk || "-"}</p>
+                <p><strong>Literasi Bahasa Indonesia:</strong> {scoresByYear[selectedYear][selectedCourses].lbi || "-"}</p>
+                <p><strong>Literasi Bahasa Inggris:</strong> {scoresByYear[selectedYear][selectedCourses].lbe || "-"}</p>
+                <p><strong>Penalaran Matematika:</strong> {scoresByYear[selectedYear][selectedCourses].pm || "-"}</p>
               </>
+            ) : (
+              <p>Data nilai tidak tersedia untuk tahun ini.</p>
             )}
           </>
         )}

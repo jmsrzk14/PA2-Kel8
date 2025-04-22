@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check, Star, Clock, Users, BookOpen, X } from 'lucide-react';
 import Modal from 'react-modal';
 import axios from 'axios';
 
 Modal.setAppElement('#root');
+
+type CoursePackage = {
+    id: number;
+    nama_paket: string;
+    price: number;
+};
+  
 
 declare global {
     interface Window {
@@ -13,20 +20,16 @@ declare global {
 
 const TryoutPackageCard = ({
     order_id = `ORDER-${new Date().getTime()}`,
-    title = "Paket Reguler",
-    price = 99000,
-    originalPrice = 15000,
-    duration = "30 hari",
+    nama_paket = "",
+    price = 0,
+    duration = "",
     features = [
-        "10 Simulasi Tryout",
-        "Pembahasan Soal",
-        "Analisis Nilai",
-        "Peringkat Nasional",
+        "",
     ],
     isPopular = false,
-    participants = 1500,
-    subjects = ["Matematika", "B.Indonesia", "B.Inggris", "IPA"],
-    description = "Paket tryout terbaik untuk persiapan ujian masuk perguruan tinggi"
+    participants = 0,
+    subjects = [""],
+    description = ""
 }) => {
     const [isPaymentOpen, setPaymentOpen] = useState(false);
     const [paymentMessage, setPaymentMessage] = useState("");
@@ -35,15 +38,15 @@ const TryoutPackageCard = ({
     const openModal = () => setOpenDetail(true);
     const closeModal = () => setOpenDetail(false);
 
-    const handleCheckout = async (order_id: string, price: number) => {
+    const handleCheckout = async (order_id: string, nama_paket:string, price: number) => {
         try {
             const response = await axios.post("http://localhost:5000/api/checkout", {
                 order_id: order_id,
+                nama_paket: nama_paket,
                 amount: price,
             });
 
             const token = response.data.token;
-            console.log(token);
 
             window.snap.pay(token, {
                 onSuccess: () => {
@@ -80,19 +83,15 @@ const TryoutPackageCard = ({
             )}
 
             {/* Header */}
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">{title}</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">{nama_paket}</h3>
 
             {/* Price */}
             <div className="mb-6">
                 <div className="flex items-end gap-2">
-                    <span className="text-3xl font-bold text-blue-600">
-                        Rp {price.toLocaleString()}
+                    <span className="text-2xl font-bold text-blue-600">
+                        Rp {price.toLocaleString("id-ID")}
                     </span>
-                    {originalPrice && (
-                        <span className="text-gray-400 line-through mb-1">
-                            Rp {originalPrice.toLocaleString()}
-                        </span>
-                    )}
+        
                 </div>
                 <div className="flex items-center gap-2 text-gray-500 mt-2">
                     <Clock size={16} />
@@ -102,12 +101,12 @@ const TryoutPackageCard = ({
 
 
             {/* Button */}
-            <div className='space-y-3'>
-                <button onClick={openModal} className='w-full py-2.5 px-4 bg-white text-blue-600 border border-blue-600 rounded-xl font-medium hover:bg-blue-100 shadow-md hover:shadow-blue-500 transition-all duration-300'>
+            <div className='space-y-3 flex items-center flex-col'>
+                <button onClick={openModal} className='w-full py-2 bg-white text-blue-600 border border-blue-600 rounded-xl font-medium hover:bg-blue-100 shadow-md hover:shadow-blue-500 transition-all duration-300'>
                 {/* <button onClick={openModal} className='w-full py-2.5 px-4 bg-white text-blue-600 border border-blue-600 rounded-xl font-medium hover:bg-blue-100 transition-colors duration-200'> */}
                     Lihat Detail
                 </button>
-                <button onClick={() => handleCheckout(order_id, price)} className="w-full py-3 px-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 shadow-lg hover:shadow-blue-500 transition-all duration-300">
+                <button onClick={() => handleCheckout(order_id, nama_paket, price)} className="w-full py-3 px-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 shadow-lg hover:shadow-blue-500 transition-all duration-300">
                     Beli Paket
                 </button>
             </div>
@@ -116,7 +115,7 @@ const TryoutPackageCard = ({
                 className="fixed inset-0 flex items-center justify-center" contentLabel="Detail Paket">
                 <div className='bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg border hover:border-blue-500 transition-all duration-300'>
                     <div className='flex justify-between items-center mb-4'>
-                        <h2 className='text-2xl font-bold text-gray-800'>Detail {title}</h2>
+                        <h2 className='text-2xl font-bold text-gray-800'>Detail {nama_paket}</h2>
                         <button onClick={closeModal} className='text-gray-500 hover:text-red-500'>
                             <X size={25} />
                         </button>
@@ -188,56 +187,34 @@ const TryoutPackageCard = ({
 };
 
 const Paket = () => {
-    const packages = [
-        {
-            title: "Paket Basic",
-            price: 15000,
-            originalPrice: 99000,
-            duration: "14 hari",
-            participants: 1000,
-            subjects: ["Matematika", "B.Indonesia", "B.Inggris"],
-            features: [
-                "5 Simulasi Tryout",
-                "Pembahasan Soal",
-                "Analisis Nilai"
-            ],
-            description: "Paket tryout dasar untuk persiapan awal dengan fokus pada mata pelajaran utama."
-        },
-        {
-            title: "Paket Premium",
-            price: 149000,
-            originalPrice: 199000,
-            duration: "30 hari",
-            participants: 2500,
-            isPopular: true,
-            subjects: ["Matematika", "B.Indonesia", "B.Inggris", "IPA", "IPS"],
-            features: [
-                "15 Simulasi Tryout",
-                "Pembahasan Video",
-                "Analisis Nilai Detail",
-                "Peringkat Nasional",
-                "Konsultasi Online"
-            ],
-            description: "Paket tryout terbaik dengan berbagai fitur lengkap dan waktu belajar yang cukup untuk persiapan ujian masuk perguruan tinggi."
-        },
-        {
-            title: "Paket Ultimate",
-            price: 299000,
-            originalPrice: 399000,
-            duration: "90 hari",
-            participants: 800,
-            subjects: ["Matematika", "B.Indonesia", "B.Inggris", "IPA", "IPS", "TPS", "TKA"],
-            features: [
-                "Unlimited Tryout",
-                "Video Premium",
-                "Analisis Personal",
-                "Peringkat Nasional",
-                "Konsultasi Private",
-                "Garansi Nilai"
-            ],
-            description: "Paket tryout terlengkap dan terbaik untuk persiapan ujian masuk perguruan tinggi dengan jaminan keberhasilan. Akses tidak terbatas ke semua materi dan fitur premium."
+    const [packages, setPackages] = useState<CoursePackage[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+    const fetchData = async () => {
+        try {
+        const response = await fetch("http://127.0.0.1:8000/admin/listPacket");
+        if (!response.ok) throw new Error("Data tidak ditemukan!");
+        const data: CoursePackage[] = await response.json();
+        setPackages(data);
+        } catch (err) {
+        setError((err as Error).message);
+        } finally {
+        setLoading(false);
         }
-    ];
+    };
+
+    fetchData();
+    }, []);
+    
+    if (loading) {
+        return <p className="text-gray-700 text-center">Loading...</p>;
+    }
+
+    if (error) {
+        return <p className="text-gray-700 text-center">Error...</p>;
+    }
 
     return (
         <div className="container mx-auto px-4 py-12">

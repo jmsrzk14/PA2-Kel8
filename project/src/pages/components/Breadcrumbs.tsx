@@ -19,6 +19,9 @@ const breadcrumbMap: { [key: string]: string } = {
   tambahMajor: "Tambah Prodi",
   viewMajor: "Detail Prodi",
   editProdi: "Update Prodi",
+  createAnnouncement: "Tambah Pengumuman",
+  viewAnnouncement: "Detail Pengumuman",
+  editAnnouncement: "Update Pengumuman"
 };
 
 const Breadcrumbs: React.FC = () => {
@@ -28,6 +31,7 @@ const Breadcrumbs: React.FC = () => {
   const [studentName, setStudentName] = useState<string | null>(null);
   const [ptnName, setPtnName] = useState<string | null>(null);
   const [majorName, setMajorName] = useState<string | null>(null);
+  const [announcementName, setAnnouncementName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPackageName = async (id: string) => {
@@ -77,6 +81,17 @@ const Breadcrumbs: React.FC = () => {
         console.error("Failed to fetch PTN name", error);
       }
     };
+    const fetchAnnouncementName = async (id: string) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewAnnouncement/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setAnnouncementName(data.judul);
+        }
+      } catch (error) {
+        console.error("Failed to fetch PTN name", error);
+      }
+    };
 
     if (pathnames.length > 2 && pathnames[1] === "students" && pathnames[2] === "viewSiswa") {
       fetchStudentName(pathnames[3]);
@@ -101,6 +116,12 @@ const Breadcrumbs: React.FC = () => {
     }
     if (pathnames.length > 2 && pathnames[1] === "major" && pathnames[2] === "editMajor") {
       fetchMajorName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "announcement" && pathnames[2] === "viewAnnouncement") {
+      fetchAnnouncementName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "announcement" && pathnames[2] === "editAnnouncement") {
+      fetchAnnouncementName(pathnames[3]);
     }
   }, [pathnames]);
 
@@ -144,6 +165,14 @@ const Breadcrumbs: React.FC = () => {
 
           if (name.match(/\d+/) && majorName && pathnames[index] === "viewMajor" ) {
             displayName = majorName;
+          }
+
+          if (name.match(/\d+/) && announcementName && pathnames[index] === "editAnnouncement" ) {
+            displayName = announcementName;
+          }
+
+          if (name.match(/\d+/) && announcementName && pathnames[index] === "viewAnnouncement" ) {
+            displayName = announcementName;
           }
 
           return (

@@ -21,44 +21,44 @@ const Tambahnilai = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-      const fetchCoursesList = async () => {
-        try {
-          const response = await fetch("http://127.0.0.1:8000/admin/listPacket");
-          const data = await response.json();
-          console.log("Data dari API:", data);
-          setCoursesList(data);
-        } catch (error) {
-          console.error("Gagal mengambil data PTN", error);
-        }
-      };
-  
-      fetchCoursesList();
-    }, []);
+    const fetchCoursesList = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/admin/listPacket");
+        const data = await response.json();
+        console.log("Data dari API:", data);
+        setCoursesList(data);
+      } catch (error) {
+        console.error("Gagal mengambil data PTN", error);
+      }
+    };
+
+    fetchCoursesList();
+  }, []);
   
   useEffect(() => {
-      const fetchPaket = async () => {
-        setLoading(true);
-        setError('');
-        try {
-          const response = await fetch(`http://127.0.0.1:8000/admin/viewStudent/${username}`);
-          if (!response.ok) throw new Error('Gagal mengambil data siswa');
-          const data = await response.json();
-          console.log("Data dari API:", data);
-  
-          setFirstName(data.first_name);
-          setIdSiswa(data.id);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          setError('Gagal memuat data. Silakan coba lagi.');
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      if (username) {
-        fetchPaket();
+    const fetchPaket = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewStudent/${username}`);
+        if (!response.ok) throw new Error('Gagal mengambil data siswa');
+        const data = await response.json();
+        console.log("Data dari API:", data);
+
+        setFirstName(data.first_name);
+        setIdSiswa(data.id);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError('Gagal memuat data. Silakan coba lagi.');
+      } finally {
+        setLoading(false);
       }
-    }, [username]);
+    };
+
+    if (username) {
+      fetchPaket();
+    }
+  }, [username]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,7 +91,7 @@ const Tambahnilai = () => {
           icon: 'success',
           confirmButtonColor: '#3085d6',
         }).then(() => {
-          navigate("/dashboard/courses/list")
+          navigate("/dashboard/students/list")
         });
     } catch (error) {
       Swal.fire({

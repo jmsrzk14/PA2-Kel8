@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, User, LogOut, ChevronDown } from 'lucide-react';
 import { Link,useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [idUsers, setIdUsers] = useState('');
+  const [nama, setNama] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const toggleMenu = () => {
     setMenuOpen(prev => !prev);
@@ -29,10 +33,34 @@ const Navbar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await axios.get(`http://localhost:8000/admin/profile`, {
+          withCredentials: true,
+        });
+  
+        const data = response.data;
+        console.log("Data dari API:", data);
+  
+        setIdUsers(data.id);
+        setNama(data.nama);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError('Gagal memuat data. Silakan coba lagi.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAdmin();
+  }, []);
+
   return (
     <div className="h-[4.5em] shadow-sm flex items-center justify-between px-4" style={{ backgroundColor: "#A3D1C6" }}>
       <div className="flex items-center gap-2">
-        <h2 className="text-gray-700 text-lg font-semibold">Welcome, Admin</h2>
+        <h2 className="text-gray-700 text-lg font-semibold">Welcome, {nama}</h2>
       </div>
       <div className="flex items-center gap-4" ref={menuRef}>
         <button className="p-2 rounded-full hover:bg-gray-100">

@@ -29,7 +29,7 @@ type T_Siswa struct {
 	CreatedBy      *int        `json:"created_by" gorm:"default:null"`
 	UpdatedAt      time.Time   `gorm:"autoUpdateTime;default:null" json:"updated_at"`
 	UpdatedBy      *int        `json:"updated_by" gorm:"default:null"`
-	Active         *int        `json:"active,omitempty" gorm:"column:active;default:0"`
+	Active         int64       `json:"active"`
 	Status         *int        `json:"status" gorm:"default:0"`
 	Status_KPJ     *int        `json:"status_kpj" gorm:"default:0"`
 
