@@ -1,21 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import axios from 'axios';
 import { Bell, User, LogOut, ChevronDown } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [idStudent, setIdStudent] = useState('');
+  const [nama, setNama] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const handleLogout = () => {
     sessionStorage.removeItem('token'); 
     navigate('/loginsiswa');
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await axios.get(`http://localhost:8000/student/profile`, {
+          withCredentials: true,
+        });
+  
+        const data = response.data;
+        console.log("Data dari API:", data);
+  
+        setIdStudent(data.id);
+        setNama(data.first_name);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError('Gagal memuat data. Silakan coba lagi.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudent();
+  }, []);
   
   return (
     <div className="h-[4.5em] shadow-sm flex items-center justify-between px-4" style={{ backgroundColor: "#A3D1C6"}}>
       <div className="flex items-center gap-2">
-        <h2 className="text-gray-700 text-lg font-semibold">Welcome, Student</h2>
+        <h2 className="text-gray-700 text-lg font-semibold">Welcome, {nama}</h2>
       </div>
       <div className="flex items-center gap-4">
         <button className="p-2 rounded-full hover:bg-gray-100">

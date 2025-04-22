@@ -156,7 +156,7 @@ func Profile(ctx *fiber.Ctx) error {
 	}
 
 	var admin models.Users
-	fmt.Println("Issuer:", claims.Issuer) // Menampilkan nilai issuer dari token
+	fmt.Println("Issuer:", claims.Issuer)
 
 	if err := database.DB.Raw("SELECT id, nama, no_handphone, email FROM users WHERE id = ?", claims.Issuer).Scan(&admin).Error; err != nil {
 		fmt.Println("Database Error:", err)

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
@@ -116,7 +117,8 @@ func Login(ctx *fiber.Ctx) error {
 		Value:    prefixedToken,
 		Expires:  time.Now().Add(time.Minute * 30),
 		HTTPOnly: true,
-		Secure:   true,
+		Secure:   false,
+		SameSite: "Lax",
 	}
 
 	ctx.Cookie(&cookie)
@@ -131,27 +133,40 @@ func Login(ctx *fiber.Ctx) error {
 	})
 }
 
-// func Profile(ctx *fiber.Ctx) error {
-// 	cookie := ctx.Cookies("Student")
-// 	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-// 		return []byte(AdminSecretKey), nil
-// 	})
+func Profile(ctx *fiber.Ctx) error {
+	cookie := ctx.Cookies("jwtStudent")
+	tokenString := strings.TrimPrefix(cookie, "student-")
 
-// 	if err != nil {
-// 		ctx.Status(fiber.StatusUnauthorized)
-// 		return ctx.JSON(fiber.Map{
-// 			"message": "unauthenticated",
-// 		})
-// 	}
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(StudentSecretKey), nil
+	})
 
-// 	claims := token.Claims.(*jwt.StandardClaims)
+	if err != nil || !token.Valid {
+		fmt.Println("JWT Parse Error:", err)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated (invalid token)",
+		})
+	}
 
-// 	var admin models.Users
+	claims, ok := token.Claims.(*jwt.StandardClaims)
+	if !ok {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated (invalid claims)",
+		})
+	}
 
-// 	database.DB.Where("id = ?", claims.Issuer).First(&admin)
+	var student models.T_Siswa
+	fmt.Println("Issuer:", claims.Issuer)
 
-// 	return ctx.JSON(admin)
-// }
+	if err := database.DB.Raw("SELECT id, username, nisn, first_name, asal_sekolah, kelompok_ujian, telp1, active, pilihan1_utbk, pilihan2_utbk, pilihan1_utbk_aktual, pilihan2_utbk_aktual FROM t_siswas WHERE id = ?", claims.Issuer).Scan(&student).Error; err != nil {
+		fmt.Println("Database Error:", err)
+		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "user not found",
+		})
+	}
+
+	return ctx.JSON(student)
+}
 
 func Logout(c *fiber.Ctx) error {
 	cookie := new(fiber.Cookie)
@@ -159,7 +174,7 @@ func Logout(c *fiber.Ctx) error {
 	cookie.Value = ""
 	cookie.Expires = time.Now().Add(-time.Minute)
 	cookie.HTTPOnly = true
-	cookie.Secure = true
+	cookie.Secure = false
 
 	c.Cookie(cookie)
 

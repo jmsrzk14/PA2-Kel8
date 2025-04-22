@@ -43,7 +43,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       ]
     },
     { icon: Box, label: 'Pembelian Paket', path: '/dashboard/student/paket' },
-    { icon: Box, label: 'Pembelian Paket', path: '/homeuser/paket' },
     { icon: User, label: 'Profil', path: '/dashboard/student/profil' },
   ];
 

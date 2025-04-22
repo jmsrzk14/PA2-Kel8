@@ -1,105 +1,153 @@
 import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import { AlertTriangleIcon, X } from "lucide-react";
+import { Link,useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-interface Choice {
-    id: number;
-    universitas: string;
-}
+// interface Choice {
+//     id: number;
+//     universitas: string;
+// }
 
 Modal.setAppElement("#root");
 export function Profil() {
     const [openModal, setOpenModalEdit] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [idStudent, setIdStudent] = useState('');
+    const [username, setUsername] = useState('');
+    const [nisn, setNisn] = useState('');
+    const [nama, setNama] = useState('');
+    const [asalSekolah, setAsalSekolah] = useState('');
+    const [kelompokUjian, setKelompokUjian] = useState('');
+    const [telp, setTelp] = useState('');
+    const [pilihan1Utbk, setPilihan1Utbk] = useState('');
+    const [pilihan2Utbk, setPilihan2Utbk] = useState('');
+    const [pilihan1UtbkAktual, setPilihan1UtbkAktual] = useState('');
+    const [pilihan2UtbkAktual, setPilihan2UtbkAktual] = useState('');
+    const [asalSekolahNama, setAsalSekolahNama] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    // State untuk profil pengguna
-    const [profil, setProfil] = useState(() =>{
-        const savedProfil = localStorage.getItem("profil");
-        return savedProfil ? JSON.parse(savedProfil) : {
-            nama: "",
-            nisn: "",
-            asalSekolah: "",
-            provinsi: "",
+    useEffect(() => {
+        const fetchStudent = async () => {
+          setLoading(true);
+          setError('');
+          try {
+            const response = await axios.get(`http://localhost:8000/student/profile`, {
+              withCredentials: true,
+            });
+      
+            const data = response.data;
+      
+            setIdStudent(data.id);
+            setNama(data.first_name);
+            setUsername(data.username);
+            setNisn(data.nisn);
+            setAsalSekolah(data.asal_sekolah);
+            setKelompokUjian(data.kelompok_ujian);
+            setTelp(data.telp1);
+            setPilihan1Utbk(data.pilihan1_utbk);
+            setPilihan2Utbk(data.pilihan2_utbk);
+            setPilihan1UtbkAktual(data.pilihan1_utbk_aktual);
+            setPilihan2UtbkAktual(data.pilihan2_utbk_aktual);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+            setError('Gagal memuat data. Silakan coba lagi.');
+          } finally {
+            setLoading(false);
+          }
         };
-    });
+        fetchStudent();
+      }, []);
+
+//     // State untuk profil pengguna
+//     const [profil, setProfil] = useState(() =>{
+//         const savedProfil = localStorage.getItem("profil");
+//         return savedProfil ? JSON.parse(savedProfil) : {
+//             nama: "",
+//             nisn: "",
+//             asalSekolah: "",
+//             provinsi: "",
+//         };
+//     });
     
-    // Ambil data pilihan kampus dari localStorage
-    const [choices, setChoices] = useState<Choice[]>(() => {
-        const savedChoices = localStorage.getItem("choices");
-        return savedChoices ? JSON.parse(savedChoices) : [{ id: 1, universitas: "" }];
-    });
+//     // Ambil data pilihan kampus dari localStorage
+//     const [choices, setChoices] = useState<Choice[]>(() => {
+//         const savedChoices = localStorage.getItem("choices");
+//         return savedChoices ? JSON.parse(savedChoices) : [{ id: 1, universitas: "" }];
+//     });
 
-    // Simpan profil ke Local Storage setiap kali berubah
-    useEffect(() => {
-        localStorage.setItem("profil", JSON.stringify(profil));
-    }, [profil]);
+//     // Simpan profil ke Local Storage setiap kali berubah
+//     useEffect(() => {
+//         localStorage.setItem("profil", JSON.stringify(profil));
+//     }, [profil]);
 
-    // Simpan pilihan kampus ke Local Storage setiap kali berubah
-    useEffect(() => {
-        localStorage.setItem("choices", JSON.stringify(choices));
-    }, [choices]);
+//     // Simpan pilihan kampus ke Local Storage setiap kali berubah
+//     useEffect(() => {
+//         localStorage.setItem("choices", JSON.stringify(choices));
+//     }, [choices]);
 
-    // const [choices, setChoices] = useState<Choice[]>([
-    //     { id: 1, universitas: "" }
-    // ]);
+//     // const [choices, setChoices] = useState<Choice[]>([
+//     //     { id: 1, universitas: "" }
+//     // ]);
 
-    // Menambahkan pilihan baru
-    const addChoice = () => {
-        if (choices.length <= 4) {
-        setChoices([...choices, { id: choices.length + 1, universitas: "" }]);
-        }
-    };
+//     // Menambahkan pilihan baru
+//     const addChoice = () => {
+//         if (choices.length <= 4) {
+//         setChoices([...choices, { id: choices.length + 1, universitas: "" }]);
+//         }
+//     };
 
-    // Menghapus pilihan berdasarkan id
-    const removeChoice = (id:number) => {
-        setChoices(choices.filter(choice => choice.id !== id));
-    };
+//     // Menghapus pilihan berdasarkan id
+//     const removeChoice = (id:number) => {
+//         setChoices(choices.filter(choice => choice.id !== id));
+//     };
 
-    // Mengupdate pilihan kampus saat user memilih
-    const handleChoiceChange = (id:number, value:string) => {
-        setChoices(choices.map(choice =>
-            choice.id === id ? { ...choice, universitas: value } : choice
-        ));
-    };
+//     // Mengupdate pilihan kampus saat user memilih
+//     const handleChoiceChange = (id:number, value:string) => {
+//         setChoices(choices.map(choice =>
+//             choice.id === id ? { ...choice, universitas: value } : choice
+//         ));
+//     };
 
-    // Mengupdate data profil saat disimpan dari modal edit
-    const handleSaveEdit = () => {
-    const updatedProfile = {
-        nama: (document.getElementById("name") as HTMLInputElement).value,
-        nisn: (document.getElementById("nisn") as HTMLInputElement).value,
-        asalSekolah: (document.getElementById("school") as HTMLInputElement).value,
-        provinsi: (document.getElementById("province") as HTMLInputElement).value,
-    };
+//     // Mengupdate data profil saat disimpan dari modal edit
+//     const handleSaveEdit = () => {
+//     const updatedProfile = {
+//         nama: (document.getElementById("name") as HTMLInputElement).value,
+//         nisn: (document.getElementById("nisn") as HTMLInputElement).value,
+//         asalSekolah: (document.getElementById("school") as HTMLInputElement).value,
+//         provinsi: (document.getElementById("province") as HTMLInputElement).value,
+//     };
     
-    // Update state lokal
-    setProfil(updatedProfile);
+//     // Update state lokal
+//     setProfil(updatedProfile);
     
-    // Simpan ke localStorage
-    localStorage.setItem('userProfile', JSON.stringify(updatedProfile));
-    localStorage.setItem('userChoices', JSON.stringify(choices));
+//     // Simpan ke localStorage
+//     localStorage.setItem('userProfile', JSON.stringify(updatedProfile));
+//     localStorage.setItem('userChoices', JSON.stringify(choices));
     
-    setOpenModalEdit(false);
-};
+//     setOpenModalEdit(false);
+// };
 
-    // Fungsi untuk menghapus data profil
-    const handleDeleteProfile = () => {
-        // Hapus data dari localStorage
-        localStorage.removeItem("profil");
-        localStorage.removeItem("choices");
+//     // Fungsi untuk menghapus data profil
+//     const handleDeleteProfile = () => {
+//         // Hapus data dari localStorage
+//         localStorage.removeItem("profil");
+//         localStorage.removeItem("choices");
 
-        // Reset state ke nilai default
-        setProfil({
-            nama: "",
-            nisn: "",
-            asalSekolah: "",
-            provinsi: "",
-        });
+//         // Reset state ke nilai default
+//         setProfil({
+//             nama: "",
+//             nisn: "",
+//             asalSekolah: "",
+//             provinsi: "",
+//         });
 
-        setChoices([{ id: 1, universitas: "" }]);
+//         setChoices([{ id: 1, universitas: "" }]);
 
-        // Tutup modal setelah penghapusan
-        setDeleteModalOpen(false);
-    };
+//         // Tutup modal setelah penghapusan
+//         setDeleteModalOpen(false);
+//     };
 
     return (
         <div className="flex items-center justify-center bg-ray-100 p-6">
@@ -109,34 +157,34 @@ export function Profil() {
                         PROFIL SISWA
                     </div>
                     <div className="p-4 space-y-2">
-                        <div className="flex"><span className="w-1/4 font-semibold">Nama</span><span className="w-3/4">: {profil.nama}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">NISN</span><span className="w-3/4">: {profil.nisn}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Asal Sekolah</span><span className="w-3/4">: {profil.asalSekolah}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Provinsi</span><span className="w-3/4">: {profil.provinsi}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Nama</span><span className="w-3/4">: {nama}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Username</span><span className="w-3/4">: {username}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">NISN</span><span className="w-3/4">: {nisn}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Asal Sekolah</span><span className="w-3/4">: {asalSekolah}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Kelompok Ujian</span><span className="w-3/4">: {kelompokUjian}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Telepon</span><span className="w-3/4">: {telp}</span></div>
                     </div>
                 </div>
                 <div className="mb-6">
                     <div className="bg-blue-500 text-white text-center py-2 rounded-t-lg font-bold text-lg">
                         PILIHAN KAMPUS DAN JURUSAN
                     </div>
-                    <div className="p-4 space-y-2">
-                        {choices.map((choice, index) => (
-                            <div className="flex" key={choice.id}>
-                        <span className="w-1/4 font-semibold">Pilihan {index + 1}</span>
-                        <span className="w-1/4 font-semibold">:{choice.universitas} </span>
+                    <div className="p-4 space-y-2 w-100">
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK</span><span className="w-1/4">: {pilihan1Utbk}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK</span><span className="w-1/4">: {pilihan2Utbk}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK Aktual</span><span className="w-1/4">: {pilihan1UtbkAktual}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-1/4">: {pilihan2UtbkAktual}</span></div>                          
+                            
                     </div>
-                        ))}
-                        </div>
                     <div className="flex justify-end space-x-3 p-4">
                         <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 shadow-lg hover:shadow-blue-500 transition-all duration-300" onClick={() => setOpenModalEdit(true)}>Edit Profile</button>
                         <button className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 shadow-lg hover:shadow-red-500 transition-all duration-300" onClick={() => setDeleteModalOpen(true)}>Delete Profile</button>
                     </div>
                 </div>
 
-                <Modal isOpen={openModal} onRequestClose={() => setOpenModalEdit(false)}
+                {/* <Modal isOpen={openModal} onRequestClose={() => setOpenModalEdit(false)}
                     className="fixed inset-0 flex items-center justify-center">
                     <div className="bg-white p-6 w-[500px] max-w-full shadow-lg border hover:border-blue-500 transition-all duration-300 rounded-lg relative">
-                        {/* shadow-lg border hover:border-blue-500 transition-all duration-300 */}
                         <button onClick={() => setOpenModalEdit(false)} className="absolute top-2 right-2 text-gray-600 hover:text-red-800">
                             <X size={25} />
                         </button>
@@ -208,7 +256,7 @@ export function Profil() {
                         </div>
                     </div>
 
-                </Modal>
+                </Modal> */}
             </div>
         </div>
     );
