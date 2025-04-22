@@ -18,11 +18,6 @@ type Sekolah_Sma struct {
 	Bentuk          string    `json:"bentuk" gorm:"not null"`
 	Sekolah         string    `json:"sekolah" gorm:"not null"`
 	Status          string    `json:"status" gorm:"not null"`
-	Alamat_jalan    *string   `json:"alamat_jalan" gorm:"default: null"`
-	Lintang         *float64  `json:"lintang" gorm:"default:null"`
-	Bujur           *float64  `json:"bujur" gorm:"default:null"`
-	Jumlah_siswa_lk *int      `json:"jumlah_siswa_lk" gorm:"default:null"`
-	Jumlah_siswa_pr *int      `json:"jumlah_siswa_pr" gorm:"default:null"`
 	CreatedAt       time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt       time.Time `gorm:"default:CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP" json:"updated_at"`
 }

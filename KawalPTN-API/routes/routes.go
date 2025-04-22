@@ -53,6 +53,11 @@ func Setup(app *fiber.App) {
 
 	student := app.Group("/student")
 	student.Post("/login", studentController.Login)
+
+	student.Get("/listPacket", controllers.IndexPacket)
+	student.Get("/viewPacket/:id", controllers.ShowPacket)
+
+	
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)
 	// admin.Get("/cashier/index", controllers.IndexCashier)
