@@ -16,11 +16,14 @@ const Navbar: React.FC = () => {
   const toggleMenu = () => {
     setMenuOpen(prev => !prev);
   };
-
   const handleLogout = () => {
     sessionStorage.removeItem('token'); 
     navigate('/loginsiswa');
   };
+
+  useEffect(() => {
+      setMenuOpen(false);
+    }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,13 +75,14 @@ const Navbar: React.FC = () => {
             <ChevronDown size={16} className="text-gray-700" />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 mt-2 w-28 bg-white border rounded-lg shadow-lg z-10">
-              <div className='absolute right-0 mt-2 bg-white border rounded-lg shadow-lg'>
+            <div className='absolute right-0 mt-2 bg-white border rounded-lg shadow-lg min-w-[250px]'>
+              <div className='px-5 py-3 border-b'>
+                <p className='text-md text-gray-700'>{nama}</p>
+              </div>
                 <button className='w-full flex items-center gap-2 px-2 py-3 text-red-600 font-medium hover:bg-red-100 rounded-md transition' onClick={handleLogout}>
                   <LogOut size={16} />Log Out
                 </button>
               </div>
-            </div>
           )}
         </div>
       </div>

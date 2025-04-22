@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
 import axios from 'axios';
 import { Bell, User, LogOut, ChevronDown } from 'lucide-react';
 
 const Navbar: React.FC = () => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -14,9 +15,17 @@ const Navbar: React.FC = () => {
   const [error, setError] = useState('');
 
   const handleLogout = () => {
-    sessionStorage.removeItem('token'); 
+    sessionStorage.removeItem('token');
     navigate('/loginsiswa');
   };
+
+  const handleProfile = () => {
+    navigate('/dashboard/student/profil');
+  }
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,10 +46,10 @@ const Navbar: React.FC = () => {
         const response = await axios.get(`http://localhost:8000/student/profile`, {
           withCredentials: true,
         });
-  
+
         const data = response.data;
         console.log("Data dari API:", data);
-  
+
         setIdStudent(data.id);
         setNama(data.first_name);
       } catch (error) {
@@ -54,7 +63,7 @@ const Navbar: React.FC = () => {
   }, []);
   
   return (
-    <div className="h-[4.5em] shadow-sm flex items-center justify-between px-4" style={{ backgroundColor: "#A3D1C6"}}>
+    <div className="h-[4.5em] shadow-sm flex items-center justify-between px-4" style={{ backgroundColor: "#A3D1C6" }}>
       <div className="flex items-center gap-2">
         <h2 className="text-gray-700 text-lg font-semibold">Welcome, {nama}</h2>
       </div>
@@ -68,8 +77,16 @@ const Navbar: React.FC = () => {
             <ChevronDown size={16} className="text-gray-700" />
           </button>
           {isOpen && (
-            <div className='absolute right-0 mt-2 bg-white border rounded-lg shadow-lg'>
-              <button className='w-full flex items-center gap-2 px-4 py-3 text-red-600 font-medium hover:bg-red-100 rounded-md transition' onClick={handleLogout}>
+            <div className='absolute right-0 mt-2 bg-white border rounded-lg shadow-lg min-w-[250px]'>
+              <div className='px-5 py-3 border-b'>
+                <p className='text-md text-gray-700'>{nama}</p>
+              </div>
+              <div className='px-5 py-3 border-b'>
+                <button className='w-full flex items-center gap-2 py-2 text-black-600 font-medium hover:bg-black-100 rounded-md transition-all duration-200' onClick={handleProfile}>
+                  <User size={16} /> Profile
+                </button>
+              </div>
+              <button className='w-full flex items-center gap-2 px-5 py-2 text-red-600 font-medium hover:bg-red-100 rounded-md transition-all duration-200' onClick={handleLogout}>
                 <LogOut size={16} />LogOut
               </button>
             </div>
