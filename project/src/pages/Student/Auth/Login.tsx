@@ -118,9 +118,9 @@ const LoginStudent: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole })
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Forgot your password?
-                </a>
+                  <Link to="/forgot_pass" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    Forgot your password?
+                  </Link>
               </div>
             </div>
 

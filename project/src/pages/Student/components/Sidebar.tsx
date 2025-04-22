@@ -39,11 +39,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       path: '#',
       children: [
         { label: 'Tryout Saya', path: '/dashboard/student/tryout' },
-        { label: 'Hasil Tryout', path: '/homeuser/hasiltryout' },
+        { label: 'Hasil Tryout', path: '/dashboard/student/hasiltryout' },
       ]
     },
-    { icon: Box, label: 'Pembelian Paket', path: '/homeuser/paket' },
-    { icon: User, label: 'Profil', path: '/homeuser/profil' },
+    { icon: Box, label: 'Pembelian Paket', path: '/dashboard/student/paket' },
+    { icon: User, label: 'Profil', path: '/dashboard/student/profil' },
   ];
 
   return (

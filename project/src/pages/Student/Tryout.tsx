@@ -32,7 +32,7 @@ const Tryout: React.FC = () => {
                                 <td className="border border-gray-300 px-4 py-2">{item.tanggal}</td>
                                 <td className="border border-gray-300 px-4 py-2">{item.rataRataTryout}</td>
                                 <td className="border border-gray-300 px-4 py-2">
-                                <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => navigate(`/homeuser/tryout/detailtryout/${item.id}`, { state: { tanggal: item.tanggal } })}>
+                                <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => navigate(`/dashboard/student/tryout/detailtryout/${item.id}`, { state: { tanggal: item.tanggal } })}>
                                     Detail
                                 </button>
                                 </td>

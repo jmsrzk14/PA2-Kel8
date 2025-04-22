@@ -50,7 +50,7 @@ const DetailTryout = () => {
                 <div className="flex justify-end mt-4">
                 <button
                     className="mt-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    onClick={() => navigate(`/homeuser/tryout`)}
+                    onClick={() => navigate(`/dashboard/student/tryout`)}
                 >
                     Kembali
                 </button>

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Dashboard from './pages/Admin/Dashboard';
-import UserContent from './pages/Student/HomeUser';
+import StudentDashboard from './pages/Student/Dashboard';
 import LoginAdmin from './pages/Auth/Login';
 import LoginSiswa from './pages/Student/Auth/Login';
 import Register from './pages/Auth/Register';
+import ForgotPass from './pages/Student/Auth/forgot_pass';
+import ChangePass from './pages/Student/Auth/change_pass';
 
 function AppRoutes() {
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -50,7 +52,7 @@ function AppRoutes() {
         path="/dashboard/student/*"
         element={
           isAuthenticated && userRole === 'student' ? (
-            <UserContent />
+            <StudentDashboard />
           ) : (
             <Navigate to="/loginsiswa" replace />
           )
@@ -78,6 +80,8 @@ function AppRoutes() {
       />
 
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot_pass" element={<ForgotPass />} />
+      <Route path="/change_pass" element={<ChangePass />} />
 
       <Route
         path="/"

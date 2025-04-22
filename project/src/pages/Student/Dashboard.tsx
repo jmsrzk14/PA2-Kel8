@@ -3,6 +3,11 @@ import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import Breadcrumbs from "./components/Breadcrumbs";
+import Paket from "./Paket";
+import Profil from "./Profil";
+import HasilTryout from "./HasilTryout";
+import Tryout from "./Tryout";
+import DetailTryout from "./DetailTryout";
 
 const DashboardContent = () => {
   const [time, setTime] = useState(new Date());
@@ -158,6 +163,11 @@ const Dashboard: React.FC = () => {
         <Breadcrumbs />
         <Routes>
           <Route path="/home" element={<DashboardContent />} />
+          <Route path="/paket" element={<Paket />} />
+          <Route path="/profil" element={<Profil />} />
+          <Route path="/hasiltryout" element={<HasilTryout />} />
+          <Route path="/tryout" element={<Tryout />} />
+          <Route path="/tryout/detailtryout/:id" element={<DetailTryout />} />
           <Route path="/settings" element={<div className="p-6">Settings Content</div>} />
         </Routes>
       </div>
