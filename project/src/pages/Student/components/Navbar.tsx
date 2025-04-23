@@ -14,7 +14,6 @@ const Navbar: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  
   const handleLogout = () => {
     sessionStorage.removeItem('token');
     navigate('/loginsiswa');
