@@ -16,6 +16,7 @@ const Navbar: React.FC = () => {
   const toggleMenu = () => {
     setMenuOpen(prev => !prev);
   };
+  
   const handleLogout = () => {
     sessionStorage.removeItem('token'); 
     navigate('/loginsiswa');
