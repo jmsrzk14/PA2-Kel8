@@ -23,8 +23,8 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
         email,
         password
       },
-      { withCredentials: true }
-    );
+        { withCredentials: true }
+      );
 
       const token = response.data.token;
 
@@ -44,10 +44,10 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-cover bg-center" style={{ backgroundImage: "url('/ice.jpg')" }}>
       <div className="relative z-10 w-full max-w-md bg-white bg-opacity-90 shadow-lg rounded-xl p-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <img 
-              src="/kawalbg.png" 
-              alt="Kawal PTN"
-              className="w-[20em] sm:w-30 md:w-30 lg:w-[15em] h-auto object-cover mb-[-2em]" 
+          <img
+            src="/steganography.bmp"
+            alt="Kawal PTN"
+            className="w-[20em] sm:w-30 md:w-30 lg:w-[15em] h-auto object-cover mb-[-2em]"
           />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -59,83 +59,83 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
             create a new account
           </Link>
         </p>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]"
-                />
-                <div
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  Email address
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]"
+                  />
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
                 </label>
+                <div className="mt-1 relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]"
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </div>
+                </div>
               </div>
 
-              <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Forgot your password?
-                </a>
-              </div>
-            </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                    Remember me
+                  </label>
+                </div>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
+                <div className="text-sm">
+                  <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    Forgot your password?
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Sign in
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };

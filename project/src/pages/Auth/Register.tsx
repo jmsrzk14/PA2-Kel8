@@ -102,7 +102,7 @@ const Register: React.FC = () => {
       <div className="relative z-10 w-full max-w-md bg-white bg-opacity-90 shadow-lg rounded-xl p-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <img
-            src="/kawalbg.png"
+            src="/steganography.bmp"
             alt="Kawal PTN"
             className="w-[20em] sm:w-30 md:w-30 lg:w-[15em] h-auto object-cover mb-[-2em]"
           />

@@ -14,7 +14,7 @@ const ForgotPass: React.FC = () => {
             <div className="relative z-10 w-full max-w-md bg-white bg-opacity-90 shadow-lg rounded-xl p-8">
                 <div className="flex justify-center">
                     <img
-                        src="/kawal.jpg"
+                        src="/steganography.bmp"
                         alt="Kawal PTN"
                         className="w-[10em] h-auto object-cover mb-4"
                     />
