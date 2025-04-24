@@ -18,6 +18,6 @@ func Connect() {
 	DB = conn
 
 	conn.AutoMigrate(
-		&models.Sekolah_Sma{}, &models.Kelulusan{}, &models.T_Ptn{}, &models.T_Siswa{}, &models.T_Prodi{}, &models.T_Paket{}, &models.T_Daya_Tampung_Prodi{}, &models.Users{}, &models.T_Nilai{}, &models.Pengumuman{})
+		&models.Payment{}, &models.Kelulusan{}, &models.T_Ptn{}, &models.T_Siswa{}, &models.T_Prodi{}, &models.T_Paket{}, &models.T_Daya_Tampung_Prodi{}, &models.Users{}, &models.T_Nilai{}, &models.Pengumuman{},)
 
 }

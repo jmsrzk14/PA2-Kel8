@@ -8,6 +8,7 @@ const breadcrumbMap: { [key: string]: string } = {
   courses: "Courses",
   university: "PTN",
   major: "Program Studi",
+  school: "Sekolah",
   tambahPaket: "Tambah Paket",
   viewPaket: "Detail Paket",
   editPaket: "Update Paket",
@@ -19,9 +20,9 @@ const breadcrumbMap: { [key: string]: string } = {
   tambahMajor: "Tambah Prodi",
   viewMajor: "Detail Prodi",
   editProdi: "Update Prodi",
-  createAnnouncement: "Tambah Pengumuman",
-  viewAnnouncement: "Detail Pengumuman",
-  editAnnouncement: "Update Pengumuman"
+  tambahSchool: "Tambah Sekolah",
+  viewSchool: "Detail Sekolah",
+  editSchool: "Update Sekolah",
 };
 
 const Breadcrumbs: React.FC = () => {
@@ -31,7 +32,7 @@ const Breadcrumbs: React.FC = () => {
   const [studentName, setStudentName] = useState<string | null>(null);
   const [ptnName, setPtnName] = useState<string | null>(null);
   const [majorName, setMajorName] = useState<string | null>(null);
-  const [announcementName, setAnnouncementName] = useState<string | null>(null);
+  const [schoolName, setSchoolName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPackageName = async (id: string) => {
@@ -81,12 +82,13 @@ const Breadcrumbs: React.FC = () => {
         console.error("Failed to fetch PTN name", error);
       }
     };
-    const fetchAnnouncementName = async (id: string) => {
+
+    const fetchSchoolName = async (id: string) => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/admin/viewAnnouncement/${id}`);
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewSekolah/${id}`);
         if (response.ok) {
           const data = await response.json();
-          setAnnouncementName(data.judul);
+          setSchoolName(data.sekolah);
         }
       } catch (error) {
         console.error("Failed to fetch PTN name", error);
@@ -117,11 +119,11 @@ const Breadcrumbs: React.FC = () => {
     if (pathnames.length > 2 && pathnames[1] === "major" && pathnames[2] === "editMajor") {
       fetchMajorName(pathnames[3]);
     }
-    if (pathnames.length > 2 && pathnames[1] === "announcement" && pathnames[2] === "viewAnnouncement") {
-      fetchAnnouncementName(pathnames[3]);
+    if (pathnames.length > 2 && pathnames[1] === "school" && pathnames[2] === "viewSchool") {
+      fetchSchoolName(pathnames[3]);
     }
-    if (pathnames.length > 2 && pathnames[1] === "announcement" && pathnames[2] === "editAnnouncement") {
-      fetchAnnouncementName(pathnames[3]);
+    if (pathnames.length > 2 && pathnames[1] === "school" && pathnames[2] === "editSchool") {
+      fetchSchoolName(pathnames[3]);
     }
   }, [pathnames]);
 
@@ -167,12 +169,12 @@ const Breadcrumbs: React.FC = () => {
             displayName = majorName;
           }
 
-          if (name.match(/\d+/) && announcementName && pathnames[index] === "editAnnouncement" ) {
-            displayName = announcementName;
+          if (name.match(/\d+/) && schoolName && pathnames[index] === "editSchool" ) {
+            displayName = schoolName;
           }
 
-          if (name.match(/\d+/) && announcementName && pathnames[index] === "viewAnnouncement" ) {
-            displayName = announcementName;
+          if (name.match(/\d+/) && schoolName && pathnames[index] === "viewSchool" ) {
+            displayName = schoolName;
           }
 
           return (

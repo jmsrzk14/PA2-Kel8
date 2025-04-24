@@ -65,6 +65,8 @@ func Setup(app *fiber.App) {
 	student.Get("/listPacket", controllers.IndexPacket)
 	student.Get("/viewPacket/:id", controllers.ShowPacket)
 
+	student.Post("/sendPayment", studentController.SendPayment)
+
 	
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)

@@ -218,12 +218,6 @@ export function Profil() {
                         <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK Aktual</span><span className="w-4/4">: {namapilihan1UtbkAktual}</span></div>
                         <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-4/4">: {namapilihan2UtbkAktual}</span></div>                          
                             
-                    <div className="p-4 space-y-2 w-full">
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK</span><span className="w-3/4">: {pilihan1Utbk}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK</span><span className="w-3/4">: {pilihan2Utbk}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK Aktual</span><span className="w-3/4">: {pilihan1UtbkAktual}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-3/4">: {pilihan2UtbkAktual}</span></div>
-                    </div>
                     <div className="flex justify-end space-x-3 p-4">
                         <button
                             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 shadow-lg hover:shadow-blue-500 transition-all duration-300"

@@ -5,21 +5,25 @@ import CoursesContent from "./Courses/courses";
 import MajorContent from "./Major/major";
 import PtnContent from "./University/ptn";
 import AnnouncementContent from "./Announcement/announcement";
+import SchoolContent from "./School/school";
 import CreateAnnouncement from "./Announcement/CreateAnnouncement";
 import CreateCourses from "./Courses/CreateCourses";
 import CreateUniversity from "./University/CreateUniversity";
 import CreateMajor from "./Major/CreateMajor";
+import CreateSchool from "./School/CreateSchool";
 import ScoreStudents from "./Student/CreateScore";
 import UpdateAnnouncement from "./Announcement/editAnnouncement";
 import UpdateCourses from "./Courses/EditCourses";
 import UpdateMajor from "./Major/EditMajor";
 import UpdateUniversity from "./University/EditUniversity";
 import UpdateStudents from "./Student/EditStudents";
+import UpdateSchool from "./School/EditSchool";
 import ViewAnnouncement from "./Announcement/viewAnnouncement"
 import ViewCourses from "./Courses/ViewCourses";
 import ViewMajor from "./Major/ViewMajor";
 import ViewStudents from "./Student/ViewStudents";
 import ViewUniversity from "./University/ViewUniversity";
+import ViewSchool from "./School/ViewSchool";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -217,6 +221,10 @@ const Dashboard: React.FC = () => {
           <Route path="/announcement/createAnnouncement" element={<CreateAnnouncement />} />
           <Route path="/announcement/viewAnnouncement/:id" element={<ViewAnnouncement />} />
           <Route path="/announcement/editAnnouncement/:id" element={<UpdateAnnouncement />} />
+          <Route path="/school/list" element={<SchoolContent />} />
+          <Route path="/school/createSchool" element={<CreateSchool />} />
+          <Route path="/school/viewSchool/:id" element={<ViewSchool />} />
+          <Route path="/school/editSchool/:id" element={<UpdateSchool />} />
         </Routes>
       </div>
     </div>

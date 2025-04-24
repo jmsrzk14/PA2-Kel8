@@ -2,15 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   Home, 
-  GraduationCap, 
   Users, 
-  School, 
-  Book, 
+  School,
+  FileText,
+  Layers, 
   Megaphone,
   MenuIcon,
   ChevronDown, 
   ChevronLeft,
-  Banknote, 
+  Banknote,
+  GraduationCap,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -36,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   const menuItems = [
     { icon: Home, label: 'Home', path: '/dashboard/home' },
     { 
-      icon: GraduationCap, 
+      icon: FileText, 
       label: 'Tryout', 
       path: '#', 
       children: [
@@ -45,8 +46,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       ]
     },
     { icon: Users, label: 'Siswa', path: '/dashboard/students/list' },
-    { icon: School, label: 'Perguruan Tinggi', path: '/dashboard/university/list' },
-    { icon: Book, label: 'Program Studi', path: '/dashboard/major/list' },
+    { icon: GraduationCap, label: 'Perguruan Tinggi', path: '/dashboard/university/list' },
+    { icon: School, label: 'Sekolah SMA', path: '/dashboard/school/list' },
+    { icon: Layers, label: 'Program Studi', path: '/dashboard/major/list' },
     { icon: Banknote, label: 'Pembayaran', path: '/dashboard/payment/list' },
     { icon: Megaphone, label: 'Pengumuman', path: '/dashboard/announcement/list' },
   ];

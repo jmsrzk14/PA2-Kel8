@@ -19,38 +19,92 @@ declare global {
 }
 
 const TryoutPackageCard = ({
+    id,
     order_id = `ORDER-${new Date().getTime()}`,
     nama_paket = "",
     price = 0,
     duration = "",
-    features = [
-        "",
-    ],
+    features = [""],
     isPopular = false,
     participants = 0,
     subjects = [""],
     description = ""
+}: {
+    id: number;
+    order_id?: string;
+    nama_paket?: string;
+    price?: number;
+    duration?: string;
+    features?: string[];
+    isPopular?: boolean;
+    participants?: number;
+    subjects?: string[];
+    description?: string;
 }) => {
     const [isPaymentOpen, setPaymentOpen] = useState(false);
     const [paymentMessage, setPaymentMessage] = useState("");
+    const [userId, setUserId] = useState<number | null>(null);
 
     const [isOpenModal, setOpenDetail] = useState(false);
     const openModal = () => setOpenDetail(true);
     const closeModal = () => setOpenDetail(false);
 
-    const handleCheckout = async (order_id: string, nama_paket:string, price: number) => {
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/student/profile", {
+                    withCredentials: true 
+                });
+                const data = response.data;
+                setUserId(data.id); 
+            } catch (error) {
+                console.error("Gagal mengambil data user:", error);
+            }
+        };
+    
+        fetchUserProfile();
+    }, []);
+    
+    const handleCheckout = async (order_id: string, id: number, price: number) => {
+        if (!userId) {
+            setPaymentMessage("User belum terautentikasi.");
+            setPaymentOpen(true);
+            return;
+        }
+
         try {
             const response = await axios.post("http://localhost:5000/api/checkout", {
-                order_id: order_id,
-                nama_paket: nama_paket,
+                order_id,
+                id,
                 amount: price,
-            });
+                user_id: userId
+            });            
 
             const token = response.data.token;
 
             window.snap.pay(token, {
-                onSuccess: () => {
-                    setPaymentMessage("Payment successful:");
+                onSuccess: async (result: any) => {
+                    const dataToSend = new URLSearchParams({
+                        order_id: order_id,
+                        id_paket: String(id),
+                        amount: String(price),
+                        id_users: String(userId)
+                    });
+                
+                    console.log("Data yang dikirim ke /payment/success:", dataToSend.toString());
+                
+                    try {
+                        await axios.post("http://localhost:8000/student/sendPayment", dataToSend, {
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            }
+                        });
+                        setPaymentMessage("Payment successful. Transaksi berhasil disimpan.");
+                    } catch (err) {
+                        console.error("Gagal menyimpan transaksi:", err);
+                        setPaymentMessage("Payment berhasil, tetapi gagal menyimpan data transaksi.");
+                    }
+                
                     setPaymentOpen(true);
                 },
                 onPending: () => {
@@ -106,7 +160,7 @@ const TryoutPackageCard = ({
                 {/* <button onClick={openModal} className='w-full py-2.5 px-4 bg-white text-blue-600 border border-blue-600 rounded-xl font-medium hover:bg-blue-100 transition-colors duration-200'> */}
                     Lihat Detail
                 </button>
-                <button onClick={() => handleCheckout(order_id, nama_paket, price)} className="w-full py-3 px-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 shadow-lg hover:shadow-blue-500 transition-all duration-300">
+                <button onClick={() => handleCheckout(order_id, id, price)} className="w-full py-3 px-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 shadow-lg hover:shadow-blue-500 transition-all duration-300">
                     Beli Paket
                 </button>
             </div>
