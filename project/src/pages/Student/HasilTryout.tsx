@@ -13,6 +13,8 @@ const HasilTryout = () => {
         provinsi: ""
     });
     const [choices, setChoices] = useState<Choice[]>([]);
+    const [totalStudents, setTotalStudents] = useState(0);
+    const [totalSchool, setTotalSchool] = useState(0);
 
     useEffect(() => {
         // Ambil data dari localStorage saat komponen dimuat

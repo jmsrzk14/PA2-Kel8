@@ -135,11 +135,17 @@ func ShowScore(ctx *fiber.Ctx) error {
 		})
 	}
 
-	groupedByYear := make(map[string]fiber.Map)
+	groupedByYear := make(map[string]map[string]fiber.Map)
 
 	for _, score := range scores {
 		yearStr := strconv.Itoa(score.Year)
-		groupedByYear[yearStr] = fiber.Map{
+		idPaketStr := strconv.Itoa(int(score.Id_Paket))
+
+		if _, exists := groupedByYear[yearStr]; !exists {
+			groupedByYear[yearStr] = make(map[string]fiber.Map)
+		}
+
+		groupedByYear[yearStr][idPaketStr] = fiber.Map{
 			"pu":    score.Pu,
 			"ppu":   score.Ppu,
 			"pbm":   score.Pbm,
@@ -153,7 +159,6 @@ func ShowScore(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(groupedByYear)
 }
-
 
 // func UpdateScore(ctx *fiber.Ctx) error {
 // 	ScoreIDStr := ctx.Params("username")

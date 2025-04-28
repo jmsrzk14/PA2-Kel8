@@ -97,49 +97,42 @@ const LihatSiswa = () => {
         if (!response.ok) throw new Error('Gagal mengambil data nilai');
         const data = await response.json();
         console.log("Data dari API:", data);
-        console.log("Response nilai mentah:", data);
-
-        const transformedScores: Record<string, Record<string, ScorePerYear>> = {};
-
-        Object.entries(data).forEach(([key, value]) => {
-          const numericKey = parseInt(key);
-          if (!isNaN(numericKey)) {
-            if (numericKey > 2000) {
-              // berarti ini tahun
-              transformedScores[numericKey] = {
-                default: value as ScorePerYear
-              };
-            } else {
-              // kemungkinan paket ID tanpa tahun — bisa kamu sesuaikan sesuai logika backend
-              if (!transformedScores['unknown']) transformedScores['unknown'] = {};
-              transformedScores['unknown'][numericKey] = value as ScorePerYear;
-            }
-          }
+  
+        const transformedScores: Record<string, Record<string, Score>> = {};
+  
+        Object.entries(data).forEach(([year, packages]) => {
+          transformedScores[year] = {};
+          Object.entries(packages as Record<string, Score>).forEach(([paketId, scoreObj]) => {
+            transformedScores[year][paketId] = scoreObj;
+          });
         });
-
+  
         setScoresByYear(transformedScores);
-
-        const years = Object.keys(data);
+  
+        const years = Object.keys(transformedScores);
         if (years.length > 0) {
           setSelectedYear(years[0]);
-          const paketList = Object.keys(data[years[0]]);
+          const paketList = Object.keys(transformedScores[years[0]]);
           if (paketList.length > 0) {
             setSelectedCourses(paketList[0]);
           }
         }
       } catch (error) {
+        console.error("Error fetching scores:", error);
+        setErrorScore('Gagal memuat data nilai.');
       } finally {
+        setLoadingScore(false);
       }
     };
-
+    
+    if (id) {
+      fetchScore();
+    }
     if(id){
       fetchCoursesList();
     }
     if (username) {
       fetchStudent();
-    }
-    if (id) {
-      fetchScore();
     }
   }, [username, id]);
 
@@ -155,12 +148,6 @@ const LihatSiswa = () => {
             <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors mb-4">
               <ClipboardList size={20} className='mr-2' />
               Input Nilai Siswa
-            </button>
-          </Link>
-          <Link to={`/dashboard/score/tambahNilai/${username}`} className="font-medium text-sm">
-            <button color="warning" className="flex items-center bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-md transition-colors">
-              <ClipboardList size={20} className='mr-2' />
-              Edit Nilai Siswa
             </button>
           </Link>
         </div>

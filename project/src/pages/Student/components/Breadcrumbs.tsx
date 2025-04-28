@@ -44,7 +44,7 @@ const Breadcrumbs: React.FC = () => {
   return (
     <div className="px-4 py-2 bg-gray-50">
       <div className="flex items-center text-sm">
-        <Link to="/dashboard/home" className="text-indigo-600 hover:text-indigo-800">
+        <Link to="/dashboard/student/home" className="text-indigo-600 hover:text-indigo-800">
           Dashboard
         </Link>
         {pathnames.slice(1).map((name, index) => {
