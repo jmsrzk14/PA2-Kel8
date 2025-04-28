@@ -64,7 +64,7 @@ func Setup(app *fiber.App) {
 	student.Post("/login", studentController.Login)
 	student.Get("/profile", studentController.Profile)
 	student.Post("/logout", studentController.Logout)
-
+	student.Put("/update/:nisn", studentController.UpdateStudent)
 	student.Get("/listPacket", controllers.IndexPacket)
 	student.Get("/viewPacket/:id", controllers.ShowPacket)
 

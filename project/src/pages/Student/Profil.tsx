@@ -16,10 +16,10 @@ export function Profil() {
     const [asalSekolah, setAsalSekolah] = useState('');
     const [kelompokUjian, setKelompokUjian] = useState('');
     const [telp, setTelp] = useState('');
-    const [pilihan1Utbk, setPilihan1Utbk] = useState('');
-    const [pilihan2Utbk, setPilihan2Utbk] = useState('');
-    const [pilihan1UtbkAktual, setPilihan1UtbkAktual] = useState('');
-    const [pilihan2UtbkAktual, setPilihan2UtbkAktual] = useState('');
+    // const [pilihan1Utbk, setPilihan1Utbk] = useState('');
+    // const [pilihan2Utbk, setPilihan2Utbk] = useState('');
+    // const [pilihan1UtbkAktual, setPilihan1UtbkAktual] = useState('');
+    // const [pilihan2UtbkAktual, setPilihan2UtbkAktual] = useState('');
     const [asalSekolahNama, setAsalSekolahNama] = useState('');
     const [namapilihan1Utbk, setNamaPilihan1Utbk] = useState('');
     const [namapilihan2Utbk, setNamaPilihan2Utbk] = useState('');
@@ -61,10 +61,21 @@ export function Profil() {
             setAsalSekolah(data.data.asal_sekolah);
             setKelompokUjian(data.data.kelompok_ujian);
             setTelp(data.data.telp1);
-            setPilihan1Utbk(data.data.pilihan1_utbk);
-            setPilihan2Utbk(data.data.pilihan2_utbk);
-            setPilihan1UtbkAktual(data.data.pilihan1_utbk_aktual);
-            setPilihan2UtbkAktual(data.data.pilihan2_utbk_aktual);
+            // setPilihan1Utbk(data.data.pilihan1_utbk);
+            // setPilihan2Utbk(data.data.pilihan2_utbk);
+            // setPilihan1UtbkAktual(data.data.pilihan1_utbk_aktual);
+            // setPilihan2UtbkAktual(data.data.pilihan2_utbk_aktual);
+            setIdStudent(data.id);
+            setNama(data.first_name);
+            setUsername(data.username);
+            setNisn(data.nisn);
+            setAsalSekolah(data.asal_sekolah);
+            setKelompokUjian(data.kelompok_ujian);
+            setTelp(data.telp1);
+            // setPilihan1Utbk(data.pilihan1_utbk);
+            // setPilihan2Utbk(data.pilihan2_utbk);
+            // setPilihan1UtbkAktual(data.pilihan1_utbk_aktual);
+            // setPilihan2UtbkAktual(data.pilihan2_utbk_aktual);
             
 
             const sekolahRes = await axios.get(`http://localhost:8000/admin/viewSekolah/${data.data.asal_sekolah}`);
@@ -98,10 +109,21 @@ export function Profil() {
                 setAsalSekolah(data.data.asal_sekolah || '');
                 setKelompokUjian(data.data.kelompok_ujian || '');
                 setTelp(data.data.telp1 || '');
-                setPilihan1Utbk(data.data.pilihan1_utbk || '');
-                setPilihan2Utbk(data.data.pilihan2_utbk || '');
-                setPilihan1UtbkAktual(data.data.pilihan1_utbk_aktual || '');
-                setPilihan2UtbkAktual(data.data.pilihan2_utbk_aktual || '');
+                // setPilihan1Utbk(data.data.pilihan1_utbk || '');
+                // setPilihan2Utbk(data.data.pilihan2_utbk || '');
+                // setPilihan1UtbkAktual(data.data.pilihan1_utbk_aktual || '');
+                // setPilihan2UtbkAktual(data.data.pilihan2_utbk_aktual || '');
+                setIdStudent(data.id);
+                setUsername(data.username);
+                setNama(data.first_name || '');
+                setNisn(data.nisn || '');
+                setAsalSekolah(data.asal_sekolah || '');
+                setKelompokUjian(data.kelompok_ujian || '');
+                setTelp(data.telp1 || '');
+                // setPilihan1Utbk(data.pilihan1_utbk || '');
+                // setPilihan2Utbk(data.pilihan2_utbk || '');
+                // setPilihan1UtbkAktual(data.pilihan1_utbk_aktual || '');
+                // setPilihan2UtbkAktual(data.pilihan2_utbk_aktual || '');
 
                 // Inisialisasi form edit dengan data dari API
                 setEditForm({
@@ -142,7 +164,7 @@ export function Profil() {
             formData.append('pilihan1_utbk_aktual', editForm.pilihan1_utbk_aktual);
             formData.append('pilihan2_utbk_aktual', editForm.pilihan2_utbk_aktual);
 
-            const response = await axios.put(`http://localhost:8000/student/update/${username}`, formData, {
+            const response = await axios.put(`http://localhost:8000/student/update/${nisn}`, formData, {
                 withCredentials: true,
             });
 
@@ -151,10 +173,10 @@ export function Profil() {
             setAsalSekolah(editForm.asal_sekolah);
             setKelompokUjian(editForm.kelompok_ujian);
             setTelp(editForm.telp1);
-            setPilihan1Utbk(editForm.pilihan1_utbk);
-            setPilihan2Utbk(editForm.pilihan2_utbk);
-            setPilihan1UtbkAktual(editForm.pilihan1_utbk_aktual);
-            setPilihan2UtbkAktual(editForm.pilihan2_utbk_aktual);
+            // setPilihan1Utbk(editForm.pilihan1_utbk);
+            // setPilihan2Utbk(editForm.pilihan2_utbk);
+            // setPilihan1UtbkAktual(editForm.pilihan1_utbk_aktual);
+            // setPilihan2UtbkAktual(editForm.pilihan2_utbk_aktual);
 
             setOpenModalEdit(false);
             setError('');
@@ -215,8 +237,13 @@ export function Profil() {
                         <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK</span><span className="w-4/4">: {namapilihan1Utbk}</span></div>
                         <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK</span><span className="w-4/4">: {namapilihan2Utbk}</span></div>
                         <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK Aktual</span><span className="w-4/4">: {namapilihan1UtbkAktual}</span></div>
-                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-4/4">: {namapilihan2UtbkAktual}</span></div>                          
-                            
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-4/4">: {namapilihan2UtbkAktual}</span></div>
+                    {/* <div className="p-4 space-y-2 w-full">
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK</span><span className="w-3/4">: {pilihan1Utbk}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK</span><span className="w-3/4">: {pilihan2Utbk}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 1 UTBK Aktual</span><span className="w-3/4">: {pilihan1UtbkAktual}</span></div>
+                        <div className="flex"><span className="w-1/4 font-semibold">Pilihan 2 UTBK Aktual</span><span className="w-3/4">: {pilihan2UtbkAktual}</span></div>
+                    </div> */}
                     <div className="flex justify-end space-x-3 p-4">
                         <button
                             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 shadow-lg hover:shadow-blue-500 transition-all duration-300"

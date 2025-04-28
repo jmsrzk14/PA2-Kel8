@@ -132,6 +132,30 @@ func Login(ctx *fiber.Ctx) error {
 	})
 }
 
+func UpdateStudent(c *fiber.Ctx) error {
+    nisn := c.Params("nisn")
+    
+    var data models.T_Siswa
+    if err := c.BodyParser(&data); err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "message": "Invalid input",
+        })
+    }
+
+    if err := database.DB.Model(&models.T_Siswa{}).
+        Where("nisn = ?", nisn).
+        Updates(data).Error; err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "message": "Failed to update student",
+        })
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "Student updated successfully",
+    })
+}
+
+
 func Profile(ctx *fiber.Ctx) error {
 	cookie := ctx.Cookies("jwtStudent")
 	if cookie == "" {
