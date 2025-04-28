@@ -56,7 +56,7 @@ const TryoutPackageCard = ({
                     withCredentials: true 
                 });
                 const data = response.data;
-                setUserId(data.id); 
+                setUserId(data.data.id); 
             } catch (error) {
                 console.error("Gagal mengambil data user:", error);
             }
@@ -92,16 +92,17 @@ const TryoutPackageCard = ({
                     });
                 
                     console.log("Data yang dikirim ke /payment/success:", dataToSend.toString());
-                
+
                     try {
                         await axios.post("http://localhost:8000/student/sendPayment", dataToSend, {
                             headers: {
                                 "Content-Type": "application/x-www-form-urlencoded"
-                            }
+                            },
+                            withCredentials: true
                         });
                         setPaymentMessage("Payment successful. Transaksi berhasil disimpan.");
                     } catch (err) {
-                        console.error("Gagal menyimpan transaksi:", err);
+                        console.log("Gagal menyimpan transaksi:", err);
                         setPaymentMessage("Payment berhasil, tetapi gagal menyimpan data transaksi.");
                     }
                 
