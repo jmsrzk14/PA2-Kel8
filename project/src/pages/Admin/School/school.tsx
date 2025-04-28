@@ -126,9 +126,9 @@ const SchoolsContent = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Link to="/dashboard/courses/tambahPaket" className="font-medium text-sm">
+        <Link to="/dashboard/school/createSchool" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
-            Tambah Sekoalah
+            Tambah Sekolah
           </button>
         </Link>
       </div>
@@ -166,7 +166,7 @@ const SchoolsContent = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Link to="/dashboard/courses/tambahPaket" className="font-medium text-sm">
+        <Link to="/dashboard/school/createSchool" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
             Tambah Sekolah
           </button>

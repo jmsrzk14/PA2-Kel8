@@ -6,6 +6,7 @@ import MajorContent from "./Major/major";
 import PtnContent from "./University/ptn";
 import AnnouncementContent from "./Announcement/announcement";
 import SchoolContent from "./School/school";
+import PaymentContent from "./Payment/payment";
 import CreateAnnouncement from "./Announcement/CreateAnnouncement";
 import CreateCourses from "./Courses/CreateCourses";
 import CreateUniversity from "./University/CreateUniversity";
@@ -21,6 +22,7 @@ import UpdateSchool from "./School/EditSchool";
 import ViewAnnouncement from "./Announcement/viewAnnouncement"
 import ViewCourses from "./Courses/ViewCourses";
 import ViewMajor from "./Major/ViewMajor";
+import ViewPayment from "./Payment/ViewPayment";
 import ViewStudents from "./Student/ViewStudents";
 import ViewUniversity from "./University/ViewUniversity";
 import ViewSchool from "./School/ViewSchool";
@@ -32,12 +34,12 @@ import {
 } from 'recharts';
 
 interface Student {
-  active: string;
+  created_at: string;
 }
 
 interface ChartData {
   year: string;
-  jumlah: number;
+  Jumlah: number;
 }
 
 const DashboardContent: React.FC = () => {
@@ -67,11 +69,10 @@ const DashboardContent: React.FC = () => {
         if (!response.ok) throw new Error("Gagal mengambil data students");
         const data: Student[] = await response.json();
         setStudentData(data);
-        console.log("Raw active data:", data.map(student => student.active));
         setTotalStudents(data.length);
 
         const grouped: Record<string, number> = data.reduce<Record<string, number>>((acc, student) => {
-          const year = student.active;
+          const year = new Date(student.created_at).getFullYear().toString();
           if (year) {
             acc[year] = (acc[year] || 0) + 1;
           }
@@ -79,9 +80,9 @@ const DashboardContent: React.FC = () => {
         }, {});
 
         const formattedChartData: ChartData[] = Object.entries(grouped)
-          .map(([year, jumlah]) => ({
+          .map(([year, Jumlah]) => ({
             year,
-            jumlah: Number(jumlah),
+            Jumlah: Number(Jumlah),
           }))
           .sort((a, b) => a.year.localeCompare(b.year));
 
@@ -164,14 +165,6 @@ const DashboardContent: React.FC = () => {
       </div>
       <h2 className="text-xl font-semibold mt-10 mb-4 text-gray-800">Jumlah Siswa per Tahun</h2>
       <div className="bg-white p-4 rounded-lg shadow">
-      <div className="mt-4 text-gray-700">
-        <h3 className="font-medium mb-2">Tahun Penerimaan yang Terdeteksi:</h3>
-        <ul className="list-disc list-inside">
-          {chartData.map((item) => (
-            <li key={item.year}>{item.year}</li>
-          ))}
-        </ul>
-      </div>
         {loading ? (
           <p className="text-gray-500">Loading chart...</p>
         ) : (
@@ -181,7 +174,7 @@ const DashboardContent: React.FC = () => {
               <XAxis dataKey="year" />
               <YAxis allowDecimals={false} />
               <Tooltip />
-              <Bar dataKey="jumlah" fill="#6366F1" />
+              <Bar dataKey="Jumlah" fill="#6366F1" />
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -225,6 +218,8 @@ const Dashboard: React.FC = () => {
           <Route path="/school/createSchool" element={<CreateSchool />} />
           <Route path="/school/viewSchool/:id" element={<ViewSchool />} />
           <Route path="/school/editSchool/:id" element={<UpdateSchool />} />
+          <Route path="/payment/list" element={<PaymentContent />} />
+          <Route path="/payment/viewPayment/:id" element={<ViewPayment />} />
         </Routes>
       </div>
     </div>

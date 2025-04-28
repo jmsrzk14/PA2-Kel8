@@ -11,7 +11,7 @@ import ChangePass from './pages/Student/Auth/change_pass';
 function AppRoutes() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -19,22 +19,22 @@ function AppRoutes() {
       setIsAuthenticated(true);
       if (token.startsWith('admin-')) {
         setUserRole('admin');
-        navigate('/dashboard/home', { replace: true });
       } else if (token.startsWith('student-')) {
         setUserRole('student');
-        navigate('/dashboard/student/home', { replace: true });
       } else {
-        setUserRole(null);
+        sessionStorage.removeItem('token');
         setIsAuthenticated(false);
-        navigate('/loginsiswa', { replace: true });
+        setUserRole(null);
       }
     } else {
       setIsAuthenticated(false);
       setUserRole(null);
-      navigate('/loginsiswa', { replace: true });
     }
+    setLoading(false);
   }, []);
 
+  if (loading) return <div>Loading...</div>;
+  
   return (
     <Routes>
       <Route
@@ -89,10 +89,8 @@ function AppRoutes() {
           isAuthenticated ? (
             userRole === 'admin' ? (
               <Navigate to="/dashboard/home" replace />
-            ) : userRole === 'student' ? (
-              <Navigate to="/dashboard/student/home" replace />
             ) : (
-              <Navigate to="/loginsiswa" replace />
+              <Navigate to="/dashboard/student/home" replace />
             )
           ) : (
             <Navigate to="/loginsiswa" replace />

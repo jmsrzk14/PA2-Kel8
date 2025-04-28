@@ -4,7 +4,6 @@ import (
 	"KawalPTN-API/database"
 	"KawalPTN-API/models"
 	"fmt"
-	"strconv"
 	"time"
 	"strings"
 
@@ -95,10 +94,10 @@ func Login(ctx *fiber.Ctx) error {
 	// 	})
 	// }
 
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Issuer:    strconv.Itoa(int(student.ID)),
-		ExpiresAt: time.Now().Add(time.Minute * 30).Unix(),
-		Subject:   "student",
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id": student.ID,
+		"exp":     time.Now().Add(time.Minute * 30).Unix(),
+		"sub":     "student",
 	})
 
 	token, err := claims.SignedString([]byte(StudentSecretKey))
@@ -135,12 +134,20 @@ func Login(ctx *fiber.Ctx) error {
 
 func Profile(ctx *fiber.Ctx) error {
 	cookie := ctx.Cookies("jwtStudent")
+	if cookie == "" {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Missing JWT cookie",
+		})
+	}
+
 	tokenString := strings.TrimPrefix(cookie, "student-")
 
-	token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid signing method")
+		}
 		return []byte(StudentSecretKey), nil
 	})
-
 	if err != nil || !token.Valid {
 		fmt.Println("JWT Parse Error:", err)
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -148,24 +155,39 @@ func Profile(ctx *fiber.Ctx) error {
 		})
 	}
 
-	claims, ok := token.Claims.(*jwt.StandardClaims)
+	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "unauthenticated (invalid claims)",
+			"message": "unauthenticated (invalid claims type)",
+		})
+	}
+
+	userID, ok := claims["user_id"].(float64) // NOTE: jwt-go parse angka sebagai float64
+	if !ok {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated (user_id missing)",
 		})
 	}
 
 	var student models.T_Siswa
-	fmt.Println("Issuer:", claims.Issuer)
-
-	if err := database.DB.Raw("SELECT id, username, nisn, first_name, asal_sekolah, kelompok_ujian, telp1, active, pilihan1_utbk, pilihan2_utbk, pilihan1_utbk_aktual, pilihan2_utbk_aktual FROM t_siswas WHERE id = ?", claims.Issuer).Scan(&student).Error; err != nil {
+	if err := database.DB.Raw(`
+		SELECT 
+			id, username, nisn, first_name, asal_sekolah, kelompok_ujian, 
+			telp1, active, pilihan1_utbk, pilihan2_utbk, 
+			pilihan1_utbk_aktual, pilihan2_utbk_aktual 
+		FROM t_siswas 
+		WHERE id = ?
+	`, uint(userID)).Scan(&student).Error; err != nil {
 		fmt.Println("Database Error:", err)
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "user not found",
 		})
 	}
 
-	return ctx.JSON(student)
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "success",
+		"data":    student,
+	})
 }
 
 func Logout(c *fiber.Ctx) error {

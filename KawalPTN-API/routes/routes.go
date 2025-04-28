@@ -2,7 +2,7 @@ package routes
 
 import (
 	controllers "KawalPTN-API/controllers/admin"
-	// "KawalPTN-API/middleware"
+	"KawalPTN-API/middleware"
 
 	studentController "KawalPTN-API/controllers/student"
 
@@ -41,7 +41,7 @@ func Setup(app *fiber.App) {
 	admin.Get("/viewMajor/:id_prodi", controllers.ShowMajor)
 	admin.Put("/editMajor/:id_prodi", controllers.UpdateMajor)
 	admin.Delete("/listMajor/:id_prodi", controllers.DeleteMajor)
-	
+
 	admin.Post("/createScore", controllers.CreateScore)
 	admin.Get("/viewScore/:id_siswa", controllers.ShowScore)
 
@@ -57,17 +57,22 @@ func Setup(app *fiber.App) {
 	admin.Put("/editSekolah/:id", controllers.UpdateSekolah)
 	admin.Delete("/listSekolah/:id", controllers.DeleteSekolah)
 
+	admin.Get("/listPayment", studentController.IndexPayment)
+	admin.Get("/viewPayment/:id", studentController.ShowPayment)
+
 	student := app.Group("/student")
 	student.Post("/login", studentController.Login)
 	student.Get("/profile", studentController.Profile)
 	student.Post("/logout", studentController.Logout)
-	
+
 	student.Get("/listPacket", controllers.IndexPacket)
 	student.Get("/viewPacket/:id", controllers.ShowPacket)
 
+	student.Use(middleware.JWTMiddleware())
+	student.Get("/myPacket", studentController.MyPacket)
+
 	student.Post("/sendPayment", studentController.SendPayment)
 
-	
 	// //Manage Cashier
 	// admin.Post("/cashier", controllers.CreateCashier)
 	// admin.Get("/cashier/index", controllers.IndexCashier)

@@ -45,3 +45,27 @@ func ShowPacket(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(packet)
 }
+
+func MyPacket(ctx *fiber.Ctx) error {
+    userID := ctx.Locals("userID")
+    if userID == nil {
+        return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+            "message": "Unauthorized",
+        })
+    }
+
+    var payments []models.Payment
+    if err := database.DB.Where("id_siswa = ?", userID).Find(&payments).Error; err != nil {
+        return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "message": "Failed to retrieve payments",
+        })
+    }
+
+    if len(payments) == 0 {
+        return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+            "message": "No payments found for this user",
+        })
+    }
+
+    return ctx.JSON(payments)
+}

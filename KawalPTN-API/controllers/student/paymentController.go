@@ -55,118 +55,69 @@ func SendPayment(ctx *fiber.Ctx) error {
 	return ctx.JSON(payment)
 }
 
-func IndexAnnouncement(ctx *fiber.Ctx) error {
-	var announcement []models.Pengumuman
+func IndexPayment(ctx *fiber.Ctx) error {
+	var payment []models.Payment
 
-	database.DB.Find(&announcement)
+	database.DB.Find(&payment)
 
-	if len(announcement) == 0 {
+	if len(payment) == 0 {
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "announcement not found",
+			"message": "payment not found",
 		})
 	}
 
-	return ctx.JSON(announcement)
+	return ctx.JSON(payment)
 }
 
-func ShowAnnouncement(ctx *fiber.Ctx) error {
-	AnnouncementIDStr := ctx.Params("id")
+func ShowPayment(ctx *fiber.Ctx) error {
+	PaymentIDStr := ctx.Params("id")
 
-	var announcement models.Pengumuman
+	var payment models.Payment
 
-	err := database.DB.Model(&announcement).
-		Select("judul, deskripsi, id_users").
-		Where("id = ?", AnnouncementIDStr).
-		First(&announcement).Error
+	err := database.DB.Model(&payment).
+		Select("id, id_siswa, id_paket, harga, created_at").
+		Where("id = ?", PaymentIDStr).
+		First(&payment).Error
 
 	if err != nil {
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "Announcement not found",
 		})
+	}
+
+	var student struct {
+		First_Name string `json:"nama_siswa"`
+	}
+
+	err = database.DB.Table("t_siswas").
+		Select("first_name").
+		Where("id = ?", payment.IdSiswa).
+		First(&student).Error
+
+	if err != nil {
+		student.First_Name = "-"
+	}
+
+	var packet struct {
+		NamaPaket string `json:"nama_paket"`
+	}
+
+	err = database.DB.Table("t_pakets").
+		Select("nama_paket").
+		Where("id = ?", payment.IdPaket).
+		First(&packet).Error
+
+	if err != nil {
+		packet.NamaPaket = "-"
 	}
 
 	response := fiber.Map{
-		"judul":     announcement.Judul,
-		"deskripsi": announcement.Deskripsi,
-		"id_users":  announcement.IdUsers,
+		"id":         payment.Id,
+		"nama":       student.First_Name,
+		"id_paket":   packet.NamaPaket,
+		"harga":      payment.Harga,
+		"created_at": payment.CreatedAt,
 	}
 
 	return ctx.JSON(response)
-}
-
-func UpdateAnnouncement(ctx *fiber.Ctx) error {
-	AnnouncementIDStr := ctx.Params("id")
-
-	var announcement models.Pengumuman
-
-	result := database.DB.Where("id = ?", AnnouncementIDStr).First(&announcement)
-	if result.RowsAffected == 0 {
-		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Announcement not found",
-		})
-	}
-
-	judul := ctx.FormValue("judul")
-	if judul == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "judul is required",
-		})
-	}
-
-	deskripsi := ctx.FormValue("deskripsi")
-	if deskripsi == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "deskripsi is required",
-		})
-	}
-
-	updateResult := database.DB.Model(&models.Pengumuman{}).Where("id = ?", AnnouncementIDStr).Updates(models.Pengumuman{
-		Judul:     judul,
-		Deskripsi: deskripsi,
-	})
-
-	if updateResult.Error != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Error Updating",
-			"error":   updateResult.Error.Error(),
-		})
-	}
-
-	return ctx.JSON(fiber.Map{
-		"message":      "Announcement updated successfully",
-		"announcement": announcement,
-	})
-
-}
-
-func DeleteAnnouncement(ctx *fiber.Ctx) error {
-	announcementIDStr := ctx.Params("id")
-
-	announcementID, err := strconv.Atoi(announcementIDStr)
-
-	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid announcement ID",
-		})
-	}
-
-	var announcement models.Pengumuman
-
-	database.DB.Where("id = ?", announcementID).First(&announcement)
-
-	if announcementID != int(announcement.Id) {
-		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Announcement not found",
-		})
-	}
-
-	if err := database.DB.Delete(&announcement).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to Delete Table",
-		})
-	}
-
-	return ctx.JSON(fiber.Map{
-		"message": "Announcement deleted successfully",
-	})
 }

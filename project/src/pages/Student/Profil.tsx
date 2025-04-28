@@ -54,28 +54,28 @@ export function Profil() {
       
             const data = response.data;
       
-            setIdStudent(data.id);
-            setNama(data.first_name);
-            setUsername(data.username);
-            setNisn(data.nisn);
-            setAsalSekolah(data.asal_sekolah);
-            setKelompokUjian(data.kelompok_ujian);
-            setTelp(data.telp1);
-            setPilihan1Utbk(data.pilihan1_utbk);
-            setPilihan2Utbk(data.pilihan2_utbk);
-            setPilihan1UtbkAktual(data.pilihan1_utbk_aktual);
-            setPilihan2UtbkAktual(data.pilihan2_utbk_aktual);
+            setIdStudent(data.data.id);
+            setNama(data.data.first_name);
+            setUsername(data.data.username);
+            setNisn(data.data.nisn);
+            setAsalSekolah(data.data.asal_sekolah);
+            setKelompokUjian(data.data.kelompok_ujian);
+            setTelp(data.data.telp1);
+            setPilihan1Utbk(data.data.pilihan1_utbk);
+            setPilihan2Utbk(data.data.pilihan2_utbk);
+            setPilihan1UtbkAktual(data.data.pilihan1_utbk_aktual);
+            setPilihan2UtbkAktual(data.data.pilihan2_utbk_aktual);
             
 
-            const sekolahRes = await axios.get(`http://localhost:8000/admin/viewSekolah/${data.asal_sekolah}`);
+            const sekolahRes = await axios.get(`http://localhost:8000/admin/viewSekolah/${data.data.asal_sekolah}`);
             setAsalSekolahNama(sekolahRes.data.sekolah);
-            const prodi1Res = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan1_utbk}`);
+            const prodi1Res = await axios.get(`http://localhost:8000/admin/viewMajor/${data.data.pilihan1_utbk}`);
             setNamaPilihan1Utbk(prodi1Res.data.nama_prodi_ptn);
-            const prodi2Res = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan2_utbk}`);
+            const prodi2Res = await axios.get(`http://localhost:8000/admin/viewMajor/${data.data.pilihan2_utbk}`);
             setNamaPilihan2Utbk(prodi2Res.data.nama_prodi_ptn);
-            const prodi1AktualRes = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan1_utbk_aktual}`);
+            const prodi1AktualRes = await axios.get(`http://localhost:8000/admin/viewMajor/${data.data.pilihan1_utbk_aktual}`);
             setNamaPilihan1UtbkAktual(prodi1AktualRes.data.nama_prodi_ptn);
-            const prodi2AktualRes = await axios.get(`http://localhost:8000/admin/viewMajor/${data.pilihan2_utbk_aktual}`);
+            const prodi2AktualRes = await axios.get(`http://localhost:8000/admin/viewMajor/${data.data.pilihan2_utbk_aktual}`);
             setNamaPilihan2UtbkAktual(prodi2AktualRes.data.nama_prodi_ptn);
           } catch (error) {
             console.error("Error fetching data:", error);
@@ -91,29 +91,29 @@ export function Profil() {
                 });
 
                 const data = response.data;
-                setIdStudent(data.id);
-                setUsername(data.username);
-                setNama(data.first_name || '');
-                setNisn(data.nisn || '');
-                setAsalSekolah(data.asal_sekolah || '');
-                setKelompokUjian(data.kelompok_ujian || '');
-                setTelp(data.telp1 || '');
-                setPilihan1Utbk(data.pilihan1_utbk || '');
-                setPilihan2Utbk(data.pilihan2_utbk || '');
-                setPilihan1UtbkAktual(data.pilihan1_utbk_aktual || '');
-                setPilihan2UtbkAktual(data.pilihan2_utbk_aktual || '');
+                setIdStudent(data.data.id);
+                setUsername(data.data.username);
+                setNama(data.data.first_name || '');
+                setNisn(data.data.nisn || '');
+                setAsalSekolah(data.data.asal_sekolah || '');
+                setKelompokUjian(data.data.kelompok_ujian || '');
+                setTelp(data.data.telp1 || '');
+                setPilihan1Utbk(data.data.pilihan1_utbk || '');
+                setPilihan2Utbk(data.data.pilihan2_utbk || '');
+                setPilihan1UtbkAktual(data.data.pilihan1_utbk_aktual || '');
+                setPilihan2UtbkAktual(data.data.pilihan2_utbk_aktual || '');
 
                 // Inisialisasi form edit dengan data dari API
                 setEditForm({
-                    first_name: data.first_name || '',
-                    nisn: data.nisn || '',
-                    asal_sekolah: data.asal_sekolah || '',
-                    kelompok_ujian: data.kelompok_ujian || '',
-                    telp1: data.telp1 || '',
-                    pilihan1_utbk: data.pilihan1_utbk || '',
-                    pilihan2_utbk: data.pilihan2_utbk || '',
-                    pilihan1_utbk_aktual: data.pilihan1_utbk_aktual || '',
-                    pilihan2_utbk_aktual: data.pilihan2_utbk_aktual || '',
+                    first_name: data.data.first_name || '',
+                    nisn: data.data.nisn || '',
+                    asal_sekolah: data.data.asal_sekolah || '',
+                    kelompok_ujian: data.data.kelompok_ujian || '',
+                    telp1: data.data.telp1 || '',
+                    pilihan1_utbk: data.data.pilihan1_utbk || '',
+                    pilihan2_utbk: data.data.pilihan2_utbk || '',
+                    pilihan1_utbk_aktual: data.data.pilihan1_utbk_aktual || '',
+                    pilihan2_utbk_aktual: data.data.pilihan2_utbk_aktual || '',
                 });
             } catch (error: any) {
                 console.error("Error fetching data:", error);
@@ -174,7 +174,7 @@ export function Profil() {
             });
             setDeleteModalOpen(false);
             alert('Profil berhasil dihapus!');
-            navigate('/loginsiswa'); // Redirect ke halaman login setelah hapus
+            navigate('/loginsiswa'); 
         } catch (error: any) {
             console.error("Error deleting profile:", error);
             setError('Gagal menghapus profil. Silakan coba lagi.');

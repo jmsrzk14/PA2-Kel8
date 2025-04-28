@@ -1,131 +1,53 @@
 package middleware
 
 import (
-	"github.com/dgrijalva/jwt-go"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 )
 
-const AdminSecretKey = "admin_secret"
-const CashierSecretKey = "cashier_secret"
-const CustomerSecretKey = "customer_secret"
+const secretKey = "student_secret"
 
-func RequiredLoginAdmin(ctx *fiber.Ctx) error {
-	cookie := ctx.Cookies("jwtAdmin")
+func JWTMiddleware() fiber.Handler {
+    return func(c *fiber.Ctx) error {
+        tokenString := c.Cookies("jwtStudent")
+        if tokenString == "" {
+            return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+                "message": "Missing JWT cookie",
+            })
+        }
 
-	if cookie == "" {
-		ctx.Status(fiber.StatusUnauthorized)
-		return ctx.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
+        tokenString = strings.TrimPrefix(tokenString, "student-")
+        token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+            if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+                return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid signing method")
+            }
+            return []byte(secretKey), nil
+        })
 
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(AdminSecretKey), nil
-	})
+        if err != nil || !token.Valid {
+            return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+                "message": "Invalid or expired token",
+            })
+        }
 
-	if err != nil {
-		ctx.Status(fiber.StatusUnauthorized)
-		return ctx.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
+        claims, ok := token.Claims.(jwt.MapClaims)
+        if !ok || !token.Valid {
+            return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+                "message": "Invalid token claims",
+            })
+        }
 
-	claims, ok := token.Claims.(*jwt.StandardClaims)
+        userID, ok := claims["user_id"];
+        if !ok {
+            return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+                "message": "User ID not found in token",
+            })
+        }
 
-	if !ok || !token.Valid {
-		ctx.Status(fiber.StatusUnauthorized)
-		return ctx.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
+        c.Locals("userID", userID)
 
-	ctx.Locals("id", claims.Issuer)
-
-	if claims.Subject != "admin" {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Access denied",
-		})
-	}
-
-	return ctx.Next()
-}
-
-func RequiredLoginCashier(ctx *fiber.Ctx) error {
-	cookie := ctx.Cookies("jwtCashier")
-
-	if cookie == "" {
-		ctx.Status(fiber.StatusUnauthorized)
-		return ctx.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(CashierSecretKey), nil
-	})
-
-	if err != nil {
-		ctx.Status(fiber.StatusUnauthorized)
-		return ctx.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	claims, ok := token.Claims.(*jwt.StandardClaims)
-
-	if !ok || !token.Valid {
-		ctx.Status(fiber.StatusUnauthorized)
-		return ctx.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	ctx.Locals("id", claims.Issuer)
-
-	if claims.Subject != "cashier" {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Access denied",
-		})
-	}
-
-	return ctx.Next()
-}
-
-func RequiredLoginCustomer(ctx *fiber.Ctx) error {
-	cookie := ctx.Cookies("jwtCustomer")
-
-	if cookie == "" {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Unauthenticated",
-		})
-	}
-
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(CustomerSecretKey), nil
-	})
-
-	if err != nil {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Unauthenticated",
-		})
-	}
-
-	claims, ok := token.Claims.(*jwt.StandardClaims)
-
-	if !ok || !token.Valid {
-		ctx.Status(fiber.StatusUnauthorized)
-		return ctx.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	ctx.Locals("id", claims.Issuer)
-
-	if claims.Subject != "customer" {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Access denied",
-		})
-	}
-
-	return ctx.Next()
+        return c.Next()
+    }
 }

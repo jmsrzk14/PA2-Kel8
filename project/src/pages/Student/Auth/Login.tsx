@@ -29,6 +29,8 @@ const LoginStudent: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole })
       const token = response.data.token;
 
       sessionStorage.setItem('token', token);
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setIsAuthenticated(true);
       setUserRole('student');
       navigate('/dashboard/student/home');

@@ -50,8 +50,8 @@ const Navbar: React.FC = () => {
         const data = response.data;
         console.log("Data dari API:", data);
 
-        setIdStudent(data.id);
-        setNama(data.first_name);
+        setIdStudent(data.data.id);
+        setNama(data.data.first_name);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError('Gagal memuat data. Silakan coba lagi.');

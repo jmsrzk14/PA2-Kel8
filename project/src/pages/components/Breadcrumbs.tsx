@@ -20,9 +20,10 @@ const breadcrumbMap: { [key: string]: string } = {
   tambahMajor: "Tambah Prodi",
   viewMajor: "Detail Prodi",
   editProdi: "Update Prodi",
-  tambahSchool: "Tambah Sekolah",
+  createSchool: "Tambah Sekolah",
   viewSchool: "Detail Sekolah",
   editSchool: "Update Sekolah",
+  viewPayment: "Detail Pembayaran",
 };
 
 const Breadcrumbs: React.FC = () => {
