@@ -146,7 +146,6 @@ export function Profil() {
                 withCredentials: true,
             });
 
-            // Update state lokal dengan data baru
             setNama(editForm.first_name);
             setNisn(editForm.nisn);
             setAsalSekolah(editForm.asal_sekolah);

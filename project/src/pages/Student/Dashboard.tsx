@@ -8,6 +8,8 @@ import Profil from "./Profil";
 import HasilTryout from "./HasilTryout";
 import Tryout from "./Tryout";
 import DetailTryout from "./DetailTryout";
+import AnnouncementContent from "./Announcement/announcement";
+import ViewAnnouncement from "./Announcement/viewAnnouncement"
 
 const DashboardContent = () => {
   const [time, setTime] = useState(new Date());
@@ -168,6 +170,8 @@ const Dashboard: React.FC = () => {
           <Route path="/hasiltryout" element={<HasilTryout />} />
           <Route path="/tryout" element={<Tryout />} />
           <Route path="/tryout/detailtryout/:id" element={<DetailTryout />} />
+          <Route path="/announcement" element={<AnnouncementContent />} />
+          <Route path="/announcement/:id" element={<ViewAnnouncement />} />
           <Route path="/settings" element={<div className="p-6">Settings Content</div>} />
         </Routes>
       </div>

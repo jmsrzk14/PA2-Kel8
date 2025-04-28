@@ -5,7 +5,7 @@ import {
   GraduationCap,
   Box,
   User,
-  UserPlusIcon,
+  Megaphone,
   MenuIcon,
   ChevronDown,
   ChevronLeft
@@ -43,6 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       ]
     },
     { icon: Box, label: 'Pembelian Paket', path: '/dashboard/student/paket' },
+    { icon: Megaphone, label: 'Pengumuman', path: '/dashboard/student/announcement' },
     { icon: User, label: 'Profil', path: '/dashboard/student/profil' },
   ];
 

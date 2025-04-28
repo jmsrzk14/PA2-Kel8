@@ -24,6 +24,9 @@ const breadcrumbMap: { [key: string]: string } = {
   viewSchool: "Detail Sekolah",
   editSchool: "Update Sekolah",
   viewPayment: "Detail Pembayaran",
+  createAnnouncement: "Tambah Pengumuman",
+  viewAnnouncement: "Detail Pengumuman",
+  editAnnouncement: "Update Pengumuman",
 };
 
 const Breadcrumbs: React.FC = () => {
@@ -34,6 +37,7 @@ const Breadcrumbs: React.FC = () => {
   const [ptnName, setPtnName] = useState<string | null>(null);
   const [majorName, setMajorName] = useState<string | null>(null);
   const [schoolName, setSchoolName] = useState<string | null>(null);
+  const [announcementName, setAnnouncementName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPackageName = async (id: string) => {
@@ -96,6 +100,18 @@ const Breadcrumbs: React.FC = () => {
       }
     };
 
+    const fetchAnnouncementName = async (id: string) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewAnnouncement/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setAnnouncementName(data.judul);
+        }
+      } catch (error) {
+        console.error("Failed to fetch Announcement name", error);
+      }
+    };
+
     if (pathnames.length > 2 && pathnames[1] === "students" && pathnames[2] === "viewSiswa") {
       fetchStudentName(pathnames[3]);
     }
@@ -125,6 +141,12 @@ const Breadcrumbs: React.FC = () => {
     }
     if (pathnames.length > 2 && pathnames[1] === "school" && pathnames[2] === "editSchool") {
       fetchSchoolName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "announcement" && pathnames[2] === "viewAnnouncement") {
+      fetchAnnouncementName(pathnames[3]);
+    }
+    if (pathnames.length > 2 && pathnames[1] === "announcement" && pathnames[2] === "editAnnouncement") {
+      fetchAnnouncementName(pathnames[3]);
     }
   }, [pathnames]);
 
@@ -176,6 +198,14 @@ const Breadcrumbs: React.FC = () => {
 
           if (name.match(/\d+/) && schoolName && pathnames[index] === "viewSchool" ) {
             displayName = schoolName;
+          }
+
+          if (name.match(/\d+/) && announcementName && pathnames[index] === "editAnnouncement" ) {
+            displayName = announcementName;
+          }
+
+          if (name.match(/\d+/) && announcementName && pathnames[index] === "viewAnnouncement" ) {
+            displayName = announcementName;
           }
 
           return (
