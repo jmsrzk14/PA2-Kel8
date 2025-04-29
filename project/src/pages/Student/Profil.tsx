@@ -222,14 +222,12 @@ function Profil() {
                     <div className="flex justify-end space-x-3 p-4">
                         <button
                             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 shadow-lg hover:shadow-blue-500 transition-all duration-300"
-                            onClick={() => setEditModalOpen(true)}
-                        >
+                            onClick={() => setEditModalOpen(true)}>
                             Edit Profile
                         </button>
                         <button
                             className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 shadow-lg hover:shadow-red-500 transition-all duration-300"
-                            onClick={() => setDeleteModalOpen(true)}
-                        >
+                            onClick={() => setDeleteModalOpen(true)}>
                             Delete Profile
                         </button>
                     </div>
@@ -240,13 +238,11 @@ function Profil() {
                     isOpen={isEditModalOpen}
                     onRequestClose={() => setEditModalOpen(false)}
                     className="fixed inset-0 flex items-center justify-center"
-                    overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-                >
+                    overlayClassName="fixed inset-0 bg-black bg-opacity-50">
                     <div className="bg-white p-6 w-full max-w-lg rounded-lg shadow-lg relative max-h-[80vh] overflow-y-auto">
                         <button
                             onClick={() => setEditModalOpen(false)}
-                            className="absolute top-2 right-2 text-gray-600 hover:text-red-800"
-                        >
+                            className="absolute top-2 right-2 text-gray-600 hover:text-red-800">
                             <X size={25} />
                         </button>
                         <h2 className="text-lg text-center font-bold mb-4">Edit Profil Anda</h2>
