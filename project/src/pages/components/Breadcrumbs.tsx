@@ -27,6 +27,8 @@ const breadcrumbMap: { [key: string]: string } = {
   createAnnouncement: "Tambah Pengumuman",
   viewAnnouncement: "Detail Pengumuman",
   editAnnouncement: "Update Pengumuman",
+  capacity: "Daya Tampung",
+  tambahCapacity: "Tambah Daya Tampung",
 };
 
 const Breadcrumbs: React.FC = () => {
@@ -148,6 +150,12 @@ const Breadcrumbs: React.FC = () => {
     if (pathnames.length > 2 && pathnames[1] === "announcement" && pathnames[2] === "editAnnouncement") {
       fetchAnnouncementName(pathnames[3]);
     }
+    if (pathnames.length > 2 && pathnames[2] === "capacity" && pathnames[3] === "tambahCapacity") {
+      fetchMajorName(pathnames[4]);
+    }
+    if (pathnames.length > 2 && pathnames[2] === "capacity" && pathnames[3] === "tambahCapacity") {
+      fetchMajorName(pathnames[4]);
+    }
   }, [pathnames]);
 
   return (
@@ -206,6 +214,10 @@ const Breadcrumbs: React.FC = () => {
 
           if (name.match(/\d+/) && announcementName && pathnames[index] === "viewAnnouncement" ) {
             displayName = announcementName;
+          }
+
+          if (name.match(/\d+/) && majorName && pathnames[index] === "tambahCapacity" ) {
+            displayName = majorName;
           }
 
           return (

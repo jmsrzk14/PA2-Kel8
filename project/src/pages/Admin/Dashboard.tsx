@@ -12,6 +12,7 @@ import CreateCourses from "./Courses/CreateCourses";
 import CreateUniversity from "./University/CreateUniversity";
 import CreateMajor from "./Major/CreateMajor";
 import CreateSchool from "./School/CreateSchool";
+import CreateCapacity from "./Major/CreateCapacity";
 import ScoreStudents from "./Student/CreateScore";
 import UpdateAnnouncement from "./Announcement/editAnnouncement";
 import UpdateCourses from "./Courses/EditCourses";
@@ -210,6 +211,7 @@ const Dashboard: React.FC = () => {
           <Route path="/major/tambahMajor" element={<CreateMajor />} />
           <Route path="/major/editMajor/:id_prodi" element={<UpdateMajor />} />
           <Route path="/major/viewMajor/:id_prodi" element={<ViewMajor />} />
+          <Route path="/major/capacity/tambahCapacity/:id_prodi" element={<CreateCapacity />} />
           <Route path="/announcement/list" element={<AnnouncementContent />} />
           <Route path="/announcement/createAnnouncement" element={<CreateAnnouncement />} />
           <Route path="/announcement/viewAnnouncement/:id" element={<ViewAnnouncement />} />
@@ -219,6 +221,7 @@ const Dashboard: React.FC = () => {
           <Route path="/school/viewSchool/:id" element={<ViewSchool />} />
           <Route path="/school/editSchool/:id" element={<UpdateSchool />} />
           <Route path="/payment/list" element={<PaymentContent />} />
+          <Route path="/payment/viewPayment/:id" element={<ViewPayment />} />
           <Route path="/payment/viewPayment/:id" element={<ViewPayment />} />
         </Routes>
       </div>

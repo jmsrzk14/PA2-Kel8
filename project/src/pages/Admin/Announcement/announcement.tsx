@@ -189,21 +189,21 @@ const AnnouncementContent = () => {
                     {column.id === "price" ? new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(row[column.id]) : row[column.id]}
                   </TableCell>                
                 ))} */}
-                {paginatedData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} align="center">
-                      <p className="text-red-500">Data tidak ditemukan!</p>
+            {paginatedData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  <p className="text-red-500">Data tidak ditemukan!</p>
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginatedData.map((row, index) => (
+                <TableRow hover tabIndex={-1} key={row.id}>
+                  <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align="center">
+                      {row[column.id]}
                     </TableCell>
-                  </TableRow>
-                ) : (
-                  paginatedData.map((row, index) => (
-                    <TableRow hover tabIndex={-1} key={row.id}>
-                      <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                      {columns.map((column) => (
-                        <TableCell key={column.id} align="center">
-                          {row[column.id]}
-                        </TableCell>
-                      ))}
+                  ))}
                 <TableCell align="center">
                   <Link to={`/dashboard/announcement/viewAnnouncement/${row.id}`}>
                     <Button variant="contained" color="primary" size="small" sx={{ mr: 3, minWidth: 30 }}><Eye size={20} /></Button>

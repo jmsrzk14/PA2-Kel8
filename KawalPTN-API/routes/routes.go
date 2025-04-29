@@ -59,6 +59,10 @@ func Setup(app *fiber.App) {
 	admin.Get("/listPayment", studentController.IndexPayment)
 	admin.Get("/viewPayment/:id", studentController.ShowPayment)
 
+	admin.Post("/createCapacity", controllers.CreateCapacity)
+	admin.Get("/listCapacity/:id_prodi", controllers.IndexCapacity)
+	admin.Delete("/listCapacity/:id", controllers.DeleteCapacity)
+
 	student := app.Group("/student")
 	student.Post("/login", studentController.Login)
 	student.Get("/profile", studentController.Profile)
