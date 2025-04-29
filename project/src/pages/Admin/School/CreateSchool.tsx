@@ -26,7 +26,7 @@ const TambahPaket = () => {
 
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/admin/createSekolah", {
+      const response = await fetch("http://localhost:8000/admin/createSekolah", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -78,13 +78,18 @@ const TambahPaket = () => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Bentuk</label>
-          <input
-            type="text"
+          <select
             className="mt-1 p-2 border rounded w-full"
             value={bentuk}
             onChange={(e) => setBentuk(e.target.value)}
             required
-          />
+          >
+            <option value="">Pilih Bentuk</option>
+            <option value="SMA">SMA</option>
+            <option value="SMK">SMK</option>
+            <option value="PKBM">PKBM</option>
+            <option value="MAN">MAN</option>
+          </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Kecamatan</label>
@@ -107,7 +112,7 @@ const TambahPaket = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Propinsi</label>
+          <label className="block text-sm font-medium text-gray-700">Provinsi</label>
           <input
             type="text"
             className="mt-1 p-2 border rounded w-full"
@@ -118,13 +123,20 @@ const TambahPaket = () => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Status</label>
-          <input
-            type="text"
+          <select
             className="mt-1 p-2 border rounded w-full"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             required
-          />
+          >
+            <option value="">Pilih Status</option>
+            <option value="S">S</option>
+            <option value="N">N</option>
+            <option value="Belum Menikah">Belum Menikah</option>
+            <option value="Sudah Menikah">Sudah Menikah</option>
+            <option value="Duda">Duda</option>
+            <option value="Janda">Janda</option>
+          </select>
         </div>
         <button
           type="submit"

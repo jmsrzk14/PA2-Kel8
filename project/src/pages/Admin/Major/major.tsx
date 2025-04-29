@@ -110,7 +110,7 @@ const MajorContent = () => {
         <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-800 mb-[1em]">Daftar Siswa</h1>
           <TextField
-            label="Cari Nama Siswa"
+            label="Cari Nama Prodi"
             variant="outlined"
             size="small"
             value={searchQuery}
@@ -145,7 +145,16 @@ const MajorContent = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between">
+        <div className="mb-4">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Daftar Prodi PTN</h1>
+          <TextField
+            label="Cari Nama Prodi"
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <Link to="/dashboard/major/tambahMajor">
           <button className="bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md">Tambah Prodi</button>
         </Link>

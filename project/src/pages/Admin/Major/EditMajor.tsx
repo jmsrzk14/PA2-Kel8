@@ -12,7 +12,7 @@ const EditMajor = () => {
   useEffect(() => {
     const fetchProdi = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/major/view/${id_prodi}`);
+        const response = await fetch(`http://127.0.0.1:8000/admin/viewMajor/${id_prodi}`);
         if (!response.ok) throw new Error('Gagal mengambil data paket');
         const data = await response.json();
         console.log("Data dari API:", data);
@@ -21,7 +21,6 @@ const EditMajor = () => {
         setActive(data.active);
         setJenjang(data.jenjang);
         setJenis(data.jenis);
-        setPtnList(data.ptn_id);
       } catch (error) {
         console.error("Error fetching paket:", error);
       }
@@ -68,7 +67,7 @@ const EditMajor = () => {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Update Prodi PTN</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Nama Paket</label>
+          <label className="block text-sm font-medium text-gray-700">Nama Prodi</label>
           <input
             type="text"
             className="mt-1 p-2 border rounded w-full"
@@ -104,7 +103,7 @@ const EditMajor = () => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Price</label>
+          <label className="block text-sm font-medium text-gray-700">Jenjang</label>
           <select
             className="mt-1 p-2 border rounded w-full"
             value={jenjang}

@@ -46,7 +46,7 @@ func CreateSekolah(ctx *fiber.Ctx) error {
 		})
 	}
 
-	sekolah := ctx.FormValue("sekolah")
+	sekolah := ctx.FormValue("sekolahs")
 	if sekolah == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "sekolah is required",
