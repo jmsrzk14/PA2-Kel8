@@ -4,7 +4,7 @@ import Dashboard from './pages/Admin/Dashboard';
 import StudentDashboard from './pages/Student/Dashboard';
 import LoginAdmin from './pages/Auth/Login';
 import LoginSiswa from './pages/Student/Auth/Login';
-import Register from './pages/Auth/Register';
+import Register from './pages/Student/Auth/Register';
 import ForgotPass from './pages/Student/Auth/forgot_pass';
 import ChangePass from './pages/Student/Auth/change_pass';
 

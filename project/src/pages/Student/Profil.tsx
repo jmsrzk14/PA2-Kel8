@@ -44,6 +44,7 @@ function Profil() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
+    const [schoolList, setSchoolList] = useState<{ id: string; nama: string }[]>([]);
 
     useEffect(() => {
         const fetchStudent = async () => {
@@ -107,6 +108,18 @@ function Profil() {
             }
         };
 
+        const fetchSchools = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/admin/listSekolah", {
+                    withCredentials: true,
+                });
+                setSchoolList(response.data || []);
+            } catch (error) {
+                console.error("Error fetching schools:", error);
+            }
+        };
+        
+        fetchSchools();        
         fetchStudent();
     }, [navigate]);
 
@@ -129,11 +142,11 @@ function Profil() {
             setEditModalOpen(false);
             setError("");
             Swal.fire({
-                      title: 'Berhasil!',
-                      text: 'Data Profil Berhasil Diperbaharui.',
-                      icon: 'success',
-                      confirmButtonColor: '#3085d6',
-                    });
+                title: 'Berhasil!',
+                text: 'Data Profil Berhasil Diperbaharui.',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+            });
         } catch (error: any) {
             console.error("Error updating profile:", error);
             setError("Gagal memperbarui profil. Silakan coba lagi.");
@@ -165,7 +178,6 @@ function Profil() {
         <div className="flex items-center justify-center bg-gray-100 p-6">
             <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-6">
                 {loading && <p className="text-center">Memuat data...</p>}
-                {error && <p className="text-red-500 text-center">{error}</p>}
                 <div className="mb-6">
                     <div className="bg-green-500 text-white text-center py-2 rounded-t-lg font-bold text-lg">
                         PROFIL SISWA
@@ -278,13 +290,19 @@ function Profil() {
                                 <label className="block font-medium" htmlFor="asal_sekolah">
                                     Asal Sekolah
                                 </label>
-                                <input
+                                <select
                                     id="asal_sekolah"
-                                    type="text"
                                     value={editForm.asal_sekolah}
                                     onChange={(e) => handleEditFormChange("asal_sekolah", e.target.value)}
                                     className="w-full p-2 border rounded-md hover:border-blue-500 transition-all duration-300"
-                                />
+                                >
+                                    <option value="">Pilih Sekolah</option>
+                                    {schoolList.map((school) => (
+                                        <option key={school.id} value={school.id}>
+                                            {school.sekolah}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
                                 <label className="block font-medium" htmlFor="kelompok_ujian">

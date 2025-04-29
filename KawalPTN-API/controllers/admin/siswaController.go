@@ -158,7 +158,6 @@ func ShowStudent(ctx *fiber.Ctx) error {
 		"first_name":         student.First_Name,
 		"last_name":          student.Last_Name,
 		"nisn":               student.NISN,
-		"active":             student.Active,
 		"no_utbk":            student.No_UTBK,
 		"grade":              student.Grade,
 		"kelompok_ujian":     student.Kelompok_Ujian,
@@ -214,22 +213,11 @@ func UpdateStudent(ctx *fiber.Ctx) error {
 		})
 	}
 
-	active := ctx.FormValue("active")
-	activeInt, err := strconv.Atoi(active)
-	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "active must be a valid integer",
-		})
-	}
-	activeInt64 := int64(activeInt) // karena tipe di model adalah *int64
-	activePtr := &activeInt64
-
 	updateResult := database.DB.Model(&models.T_Siswa{}).Where("username = ?", StudentIDStr).Updates(models.T_Siswa{
 		First_Name: first_name,
 		No_UTBK:    &no_utbkInt,
 		NISN:       &nisnInt,
 		Grade:      &grade,
-		Active:     *activePtr,
 	})
 
 	if updateResult.Error != nil {

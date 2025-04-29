@@ -36,15 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
 
   const menuItems = [
     { icon: Home, label: 'Home', path: '/dashboard/home' },
-    { 
-      icon: FileText, 
-      label: 'Tryout', 
-      path: '#', 
-      children: [
-        { label: 'Daftar Paket', path: '/dashboard/courses/list' },
-        { label: 'Hasil Tryout', path: '/dashboard/courses/result' },
-      ]
-    },
+    { icon: FileText, label: 'Tryout', path: '/dashboard/courses/list' },
     { icon: Users, label: 'Siswa', path: '/dashboard/students/list' },
     { icon: GraduationCap, label: 'Perguruan Tinggi', path: '/dashboard/university/list' },
     { icon: School, label: 'Sekolah SMA', path: '/dashboard/school/list' },

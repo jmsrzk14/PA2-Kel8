@@ -11,6 +11,8 @@ const Register: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    username: '',
+    kelompok_ujian: '',
     password: '',
     confirmPassword: '',
   });
@@ -18,29 +20,32 @@ const Register: React.FC = () => {
   const [errors, setErrors] = useState({
     name: '',
     email: '',
+    username: '',
+    kelompok_ujian: '',
     password: '',
     confirmPassword: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-  
+
     setFormData(prev => ({ ...prev, [name]: value }));
     setErrors(prev => ({ ...prev, [name]: '' }));
-  
+
     if (name === 'confirmPassword' || name === 'password') {
       const password = name === 'password' ? value : formData.password;
       const confirmPassword = name === 'confirmPassword' ? value : formData.confirmPassword;
-  
+
       if (password && confirmPassword && password === confirmPassword) {
         setErrors(prev => ({ ...prev, confirmPassword: '' }));
       } else {
         setErrors(prev => ({ ...prev, confirmPassword: 'Password tidak cocok' }));
       }
     }
-  };  
+  };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (!value) {
       setErrors(prev => ({ ...prev, [name]: 'Kolom ini wajib diisi' }));
@@ -70,11 +75,15 @@ const Register: React.FC = () => {
     if (!valid) return;
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/admin/register', {
+      const response = await axios.post('http://localhost:8000/student/register', {
         name: formData.name,
+        username: formData.username,
         email: formData.email,
+        kelompok_ujian: formData.kelompok_ujian,
         password: formData.password,
       });
+
+      console.log(response);
 
       if (response.status === 201 || response.status === 200) {
         Swal.fire({
@@ -85,16 +94,16 @@ const Register: React.FC = () => {
         }).then(() => {
           navigate('/loginsiswa');
         });
-      }      
+      }
     } catch (error: any) {
-      console.error(error);
+      console.log(error);
       Swal.fire({
         icon: 'error',
         title: 'Registrasi Gagal',
         text: error.response?.data?.message || 'Terjadi kesalahan saat registrasi',
         confirmButtonColor: '#ef4444',
       });
-    }    
+    }
   };
 
   return (
@@ -120,12 +129,60 @@ const Register: React.FC = () => {
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <form className="space-y-6" onSubmit={handleRegister}>
-              {['name', 'email', 'password', 'confirmPassword'].map((field) => {
-                const isPassword = field.includes('password');
-                const isConfirmPassword = field.includes('confirmPassword');
+              {['name', 'email', 'username'].map((field) => {
                 const labelMap: Record<string, string> = {
                   name: 'Full name',
+                  username: 'Username',
                   email: 'Email address',
+                };
+
+                return (
+                  <div key={field}>
+                    <label htmlFor={field} className="block text-sm font-medium text-gray-700">
+                      {labelMap[field]}
+                    </label>
+                    <input
+                      id={field}
+                      name={field}
+                      type={field === 'email' ? 'email' : 'text'}
+                      required
+                      value={formData[field as keyof typeof formData]}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`appearance-none block w-full px-3 py-2 border ${
+                        errors[field as keyof typeof errors] ? 'border-red-500' : 'border-gray-300'
+                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]`}
+                    />
+                  </div>
+                );
+              })}
+
+              {/* Select Kelompok Ujian */}
+              <div>
+                <label htmlFor="kelompok_ujian" className="block text-sm font-medium text-gray-700">
+                  Kelompok Ujian
+                </label>
+                <select
+                  id="kelompok_ujian"
+                  name="kelompok_ujian"
+                  required
+                  value={formData.kelompok_ujian}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`appearance-none block w-full px-3 py-2 border ${
+                    errors.kelompok_ujian ? 'border-red-500' : 'border-gray-300'
+                  } rounded-md shadow-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]`}
+                >
+                  <option value="">-- Pilih Kelompok Ujian --</option>
+                  <option value="SAINTEK">SAINTEK</option>
+                  <option value="SOSHUM">SOSHUM</option>
+                  <option value="CAMPURAN">CAMPURAN</option>
+                </select>
+              </div>
+
+              {/* Password & Confirm Password */}
+              {['password', 'confirmPassword'].map((field) => {
+                const labelMap: Record<string, string> = {
                   password: 'Password',
                   confirmPassword: 'Confirm password',
                 };
@@ -139,7 +196,7 @@ const Register: React.FC = () => {
                       <input
                         id={field}
                         name={field}
-                        type={isPassword || isConfirmPassword ? (showPassword ? 'text' : 'password') : field === 'email' ? 'email' : 'text'}
+                        type={showPassword ? 'text' : 'password'}
                         required
                         value={formData[field as keyof typeof formData]}
                         onChange={handleChange}
@@ -148,16 +205,14 @@ const Register: React.FC = () => {
                           errors[field as keyof typeof errors] ? 'border-red-500' : 'border-gray-300'
                         } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-[2.5em]`}
                       />
-                      {(isPassword || isConfirmPassword) && (
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(prev => !prev)}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-                          tabIndex={-1}
-                        >
-                          {showPassword ? <EyeOff className="h-5 w-5 text-gray-500" /> : <Eye className="h-5 w-5 text-gray-500" />}
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(prev => !prev)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5 text-gray-500" /> : <Eye className="h-5 w-5 text-gray-500" />}
+                      </button>
                     </div>
                   </div>
                 );

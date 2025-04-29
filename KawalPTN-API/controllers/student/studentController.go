@@ -4,55 +4,61 @@ import (
 	"KawalPTN-API/database"
 	"KawalPTN-API/models"
 	"fmt"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	// "golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const StudentSecretKey = "student_secret"
 
-// func Register(ctx *fiber.Ctx) error {
-// 	var data map[string]string
+func Register(ctx *fiber.Ctx) error {
+	var data map[string]string
+	fmt.Println("Signing key:", StudentSecretKey)
+	if err := ctx.BodyParser(&data); err != nil {
+		return err
+	}
 
-// 	if err := ctx.BodyParser(&data); err != nil {
-// 		return err
-// 	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data["password"]), 10)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to hash password",
+		})
+	}
 
-// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data["password"]), 10)
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 			"error": "Failed to hash password",
-// 		})
-// 	}
+	student := models.T_Siswa{
+		First_Name:     data["name"],
+		Username:       data["username"],
+		Email:          data["email"],
+		Kelompok_Ujian: data["kelompok_ujian"],
+		Password:       string(hashedPassword),
+	}
 
-// 	admin := models.Users{
-// 		Nama:     data["name"],
-// 		Email:    data["email"],
-// 		Password: string(hashedPassword),
-// 	}
+	fmt.Println(student);
 
-// 	if err := admin.ValidateUsers(); err != nil {
-// 		if validateErr, ok := err.(validator.ValidationErrors); ok {
-// 			var validationErrors []string
-// 			for _, e := range validateErr {
-// 				validationErrors = append(validationErrors, e.Error())
-// 			}
-// 			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-// 				"errors": validationErrors,
-// 			})
-// 		}
-// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 			"error": "Internal Server Error",
-// 		})
-// 	}
+	if err := student.ValidateTSiswa(); err != nil {
+		if validateErr, ok := err.(validator.ValidationErrors); ok {
+			var validationErrors []string
+			for _, e := range validateErr {
+				validationErrors = append(validationErrors, e.Error())
+			}
+			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"errors": validationErrors,
+			})
+		}
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Internal Server Error",
+		})
+	}
 
-// 	database.DB.Create(&admin)
-// 	return ctx.JSON(admin)
-// }
+	student.CreatedAt = time.Time{}
+	student.UpdatedAt = time.Time{}
+	database.DB.Create(&student)
+	return ctx.JSON(student)
+}
 
 func Login(ctx *fiber.Ctx) error {
 	var data map[string]string
@@ -133,28 +139,27 @@ func Login(ctx *fiber.Ctx) error {
 }
 
 func UpdateStudent(c *fiber.Ctx) error {
-    nisn := c.Params("nisn")
-    
-    var data models.T_Siswa
-    if err := c.BodyParser(&data); err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "message": "Invalid input",
-        })
-    }
+	nisn := c.Params("nisn")
 
-    if err := database.DB.Model(&models.T_Siswa{}).
-        Where("nisn = ?", nisn).
-        Updates(data).Error; err != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "message": "Failed to update student",
-        })
-    }
+	var data models.T_Siswa
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid input",
+		})
+	}
 
-    return c.JSON(fiber.Map{
-        "message": "Student updated successfully",
-    })
+	if err := database.DB.Model(&models.T_Siswa{}).
+		Where("nisn = ?", nisn).
+		Updates(data).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to update student",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Student updated successfully",
+	})
 }
-
 
 func Profile(ctx *fiber.Ctx) error {
 	cookie := ctx.Cookies("jwtStudent")
@@ -197,7 +202,7 @@ func Profile(ctx *fiber.Ctx) error {
 	if err := database.DB.Raw(`
 		SELECT 
 			id, username, nisn, first_name, asal_sekolah, kelompok_ujian, 
-			telp1, active, pilihan1_utbk, pilihan2_utbk, 
+			telp1, pilihan1_utbk, pilihan2_utbk, 
 			pilihan1_utbk_aktual, pilihan2_utbk_aktual 
 		FROM t_siswas 
 		WHERE id = ?

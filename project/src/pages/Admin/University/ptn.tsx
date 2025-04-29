@@ -113,7 +113,7 @@ const PtnContent = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Link to="/dashboard/university/tambahPaket" className="font-medium text-sm">
+        <Link to="/dashboard/university/tambahPtn" className="font-medium text-sm">
           <button className="flex items-center bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-md transition-colors">
             Tambah PTN
           </button>

@@ -68,7 +68,7 @@ const LoginStudent: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole })
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                Username
               </label>
               <div className="mt-1">
                 <input
