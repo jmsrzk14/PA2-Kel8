@@ -44,7 +44,7 @@ function Profil() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
-    const [schoolList, setSchoolList] = useState<{ id: string; nama: string }[]>([]);
+    const [schoolList, setSchoolList] = useState<{ id: string; nama: string; sekolah:string }[]>([]);
 
     useEffect(() => {
         const fetchStudent = async () => {
