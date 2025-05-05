@@ -25,3 +25,4 @@ Route::get('/homeAdmin', [FrontEndController::class, 'homeAdmin'])->name('homeAd
 
 Route::get('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);

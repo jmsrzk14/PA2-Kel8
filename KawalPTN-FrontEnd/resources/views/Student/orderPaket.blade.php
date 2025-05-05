@@ -54,11 +54,40 @@
                     <div class="position-relative overflow-hidden">
                         <img class="img-fluid" src="{{asset('/FrontEnd/img/course-1.jpg')}}" alt="">
                         <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                            <button type="button" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;" data-bs-toggle="modal" data-bs-target="#scrolling-long-content">Read More</button>
-                            <x-modal id="scrolling-long-content" title="Scrolling long content">
+                            <button type="button" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;" data-bs-toggle="modal" data-bs-target="#vertically-centered">Read More</button>
+                            <x-modal id="vertically-centered" title="Detail Paket" :centered="true">
                                 <x-slot name="body">
-                                    Mantap
+                                    <h2 class="mb-3">
+                                        <i class="fas fa-crown text-warning me-2"></i> Paket Premium
+                                    </h2>
+                                    <ul class="list-unstyled">
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-book text-info me-3 mt-1"></i>
+                                            <span>Akses <strong>tak terbatas</strong> ke semua tryout UTBK & materi pembelajaran.</span>
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-book text-info me-3 mt-1"></i>
+                                            <span>Statistik performa lengkap dan <strong>analisis kekuatan vs kelemahan</strong>.</span>
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-book text-info me-3 mt-1"></i>
+                                            <span>Konsultasi <strong>langsung dengan mentor PTN pilihan</strong> (via chat & video).</span>
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-book text-info me-3 mt-1"></i>
+                                            <span>Fitur <strong>simulasi waktu nyata</strong> saat mengerjakan soal.</span>
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-book text-info me-3 mt-1"></i>
+                                            <span>Kesempatan ikut <strong>ranking nasional mingguan</strong> untuk semua peserta.</span>
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-book text-info me-3 mt-1"></i>
+                                            <span>Akses prioritas untuk <strong>fitur terbaru dan update eksklusif</strong> aplikasi.</span>
+                                        </li>
+                                    </ul>
                                 </x-slot>
+
                                 <x-slot name="footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <button type="button" class="btn btn-primary">Save changes</button>

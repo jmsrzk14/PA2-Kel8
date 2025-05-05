@@ -15,10 +15,12 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <link href="{{asset('/FrontEnd/img/kawalbg.png')}}" rel="icon">
+
     <link href="{{asset('/FrontEnd/css/style.css')}}" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-dark d-flex justify-content-center align-items-center min-vh-100">
 
     <div class="container py-5">
         <!-- Pills navs -->
@@ -26,7 +28,7 @@
             <a href="/login" class="btn btn-outline-primary btn-floating">
                 <i class="fas fa-sign-in-alt me-1"></i> Login
             </a>
-            <a href="/register" class="btn btn-outline-success btn-floating">
+            <a href="/register" class="btn btn-outline-warning btn-floating">
                 <i class="fas fa-user-plus me-1"></i> Register
             </a>
         </div>
@@ -36,7 +38,8 @@
             <div class="col-md-6">
                 <div class="card shadow rounded-4">
                     <div class="card-body">
-                        <form>
+                        <form id="registerForm" method="POST" action="/register">
+                            @csrf
                             <div class="text-center mb-3">
                                 <a class=""><img class="auth-logo" src="{{asset('/FrontEnd/img/steganography.bmp')}}"></a>
                                 <br>
@@ -73,14 +76,25 @@
                                 <input type="email" class="form-control" id="registerEmail">
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 position-relative">
                                 <label for="registerPassword" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="registerPassword">
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="registerPassword">
+                                    <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                        <i class="fa fa-eye-slash" id="togglePassIcon"></i>
+                                    </span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 position-relative">
                                 <label for="registerRepeatPassword" class="form-label">Repeat Password</label>
-                                <input type="password" class="form-control" id="registerRepeatPassword">
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="registerRepeatPassword">
+                                    <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                        <i class="fa fa-eye-slash" id="toggleRepeatIcon"></i>
+                                    </span>
+                                </div>
+                                <div id="passwordError" class="text-danger small mt-1 d-none">Password tidak cocok</div>
                             </div>
 
                             <div class="form-check d-flex justify-content-center mb-3">
@@ -90,7 +104,7 @@
                                 </label>
                             </div>
 
-                            <a type="submit" class="btn btn-outline-primary btn-floating w-100" href="/login">Sign up</a>
+                            <button type="submit" class="btn btn-outline-primary btn-floating w-100" href="/login">Sign up</button>
                         </form>
                     </div>
                 </div>
@@ -100,5 +114,30 @@
     </div>
 
 </body>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const pass = document.getElementById('registerPassword').value;
+        const repeat = document.getElementById('registerRepeatPassword').value;
+        const errorEl = document.getElementById('passwordError');
+        if (pass != repeat) {
+            e.preventDefault();
+            errorEl.classList.remove('d-none');
+        } else {
+            errorEl.classList.add('d-none');
+        }
+    });
+
+    document.querySelectorAll('.toggle-password').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            const icon = this.querySelector('i');
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    });
+</script>
 
 </html>
